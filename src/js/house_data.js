@@ -95,7 +95,7 @@ var getData = (function($){
         // use the array of arrays (variable csv_as_array)
         // for further processing
       },
-      error: log("csv failed")
+      error: log("csv failed refreshed 1")
     });
   }
 
