@@ -62,7 +62,7 @@ var getData = (function($){
 
   function getStateCode() {
     $.support.cors = true;
-    var url = 'http://static.quandl.com/zillow/state_codes.csv';
+    var url = './state_codes.csv';
 
     var xhr = createCORSRequest('GET', url);
     if (!xhr) {
@@ -83,10 +83,7 @@ var getData = (function($){
 
     xhr.send();
     // $.ajax({
-    //   url: "http://static.quandl.com/zillow/state_codes.csv",
-    //   headers: {
-        
-    //   },
+    //   url: "./state_codes.csv",
     //   success: function (csvd) {
     //       csv_as_array = $.csv.toObjects(csvd);
     //       log(csv_as_array);
