@@ -83,7 +83,7 @@ var getData = (function($){
 
     // xhr.send();
     $.ajax({
-      url: "./state_codes.csv",
+      url: "/state_codes.csv",
       success: function (csvd) {
           csv_as_array = $.csv.toObjects(csvd);
           log(csv_as_array);
