@@ -23,7 +23,7 @@ gmap = (function($){
     },
     mapcanvas: 0,
 
-    // Coordinates for center of NL
+    // Coordinates for center of US
     latCenter : 37.09024,
     lonCenter : -96.712891
   };
@@ -66,11 +66,19 @@ gmap = (function($){
     map = new google.maps.Map(settings.mapcanvas[0], mapOptions);
   }
 
+  //function moveLocation(LatLng) {}
+
+  //function displayMarker(latLng, ...) {}
+    // get info
+    // create marker
+      // or use d3.js to create overlay
+    // create infoWindow
+      // or use d3.js overlay
+    // bind to map
+
   return {
     init: init,
     build: build
   };
 
 })(jQuery);
-
-// run gmap.init() onload
