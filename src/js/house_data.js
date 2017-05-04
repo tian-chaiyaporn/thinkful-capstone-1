@@ -34,69 +34,69 @@ var getData = (function($){
     }
   */
 
-  function createCORSRequest(method, url) {
-    var xhr = new XMLHttpRequest();
-    if ("withCredentials" in xhr) {
-      // XHR for Chrome/Firefox/Opera/Safari.
-      xhr.open(method, url, true);
-    } else if (typeof XDomainRequest != "undefined") {
-      // XDomainRequest for IE.
-      xhr = new XDomainRequest();
-      xhr.open(method, url);
-    } else {
-      // CORS not supported.
-      xhr = null;
-    }
-    return xhr;
-  }
+  // function createCORSRequest(method, url) {
+  //   var xhr = new XMLHttpRequest();
+  //   if ("withCredentials" in xhr) {
+  //     // XHR for Chrome/Firefox/Opera/Safari.
+  //     xhr.open(method, url, true);
+  //   } else if (typeof XDomainRequest != "undefined") {
+  //     // XDomainRequest for IE.
+  //     xhr = new XDomainRequest();
+  //     xhr.open(method, url);
+  //   } else {
+  //     // CORS not supported.
+  //     xhr = null;
+  //   }
+  //   return xhr;
+  // }
 
-  // Helper method to parse the title tag from the response.
-  function getTitle(text) {
-    return text.match('<title>(.*)?</title>')[1];
-  }
+  // // Helper method to parse the title tag from the response.
+  // function getTitle(text) {
+  //   return text.match('<title>(.*)?</title>')[1];
+  // }
 
-  // Make the actual CORS request.
-  function makeCorsRequest() {
-    // This is a sample server that supports CORS.
-  }
+  // // Make the actual CORS request.
+  // function makeCorsRequest() {
+  //   // This is a sample server that supports CORS.
+  // }
 
   function getStateCode() {
     $.support.cors = true;
-    var url = './state_codes.csv';
+    // var url = './state_codes.csv';
 
-    var xhr = createCORSRequest('GET', url);
-    if (!xhr) {
-      alert('CORS not supported');
-      return;
-    }
+    // var xhr = createCORSRequest('GET', url);
+    // if (!xhr) {
+    //   alert('CORS not supported');
+    //   return;
+    // }
 
-    // Response handlers.
-    xhr.onload = function() {
-      var text = xhr.responseText;
-      var title = getTitle(text);
-      alert('Response from CORS request to ' + url + ': ' + title);
-    };
+    // // Response handlers.
+    // xhr.onload = function() {
+    //   var text = xhr.responseText;
+    //   var title = getTitle(text);
+    //   alert('Response from CORS request to ' + url + ': ' + title);
+    // };
 
-    xhr.onerror = function() {
-      alert('Woops, there was an error making the request.');
-    };
+    // xhr.onerror = function() {
+    //   alert('Woops, there was an error making the request.');
+    // };
 
-    xhr.send();
-    // $.ajax({
-    //   url: "./state_codes.csv",
-    //   success: function (csvd) {
-    //       csv_as_array = $.csv.toObjects(csvd);
-    //       log(csv_as_array);
-    //       // stateCodes.stateCodes = csv_as_array;
-    //   }, 
-    //   dataType: "csv",
-    //   complete: function () {
-    //     log("load csv completed");
-    //     // use the array of arrays (variable csv_as_array)
-    //     // for further processing
-    //   },
-    //   error: log("csv failed")
-    // });
+    // xhr.send();
+    $.ajax({
+      url: "./state_codes.csv",
+      success: function (csvd) {
+          csv_as_array = $.csv.toObjects(csvd);
+          log(csv_as_array);
+          // stateCodes.stateCodes = csv_as_array;
+      }, 
+      dataType: "csv",
+      complete: function () {
+        log("load csv completed");
+        // use the array of arrays (variable csv_as_array)
+        // for further processing
+      },
+      error: log("csv failed")
+    });
   }
 
   function getAreaCode() {
