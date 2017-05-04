@@ -4,13 +4,9 @@ map.js
 house_data.js
 */
 
-(function() {
+(function($) {
   'use strict';
-
-  // initialize map
-  log('app loaded');
-  gmap.init();
-
+  
   var countryData = {};
   /*
     countryData = {
@@ -119,25 +115,47 @@ house_data.js
     }
   */
 
-  // if countryData doesn't exist
-    // getDate.state()
-    // store resultObject in countryData
-
-  // get form data
-  // if form.option.text() === 'all states'
-    // use countryData for-in loop
-      // log data if success
+  function initializeData() {
+    log("initialize markers");
+    // if countryData doesn't exist
+    if ($.isEmptyObject(countryData)) {
+      // resultObject = getDate.state()
+      var resultObjects = getData.state();
+      
       // displayData()
+      for (var object in resultObjects) {
+        displayUSData(object);
+      }
+      return resultObjects;
+    } else {
+      log("error, data is not refreshed");
+    }
+  }
 
-  // if countryData.state.neighborhoods.length === 0
-    // getData.area(stateX)
-    // store resultArray in countryData.stateX.neighborhood
+  function processRequest() {
+    // get form data
+    // if form.option.text() === 'all states'
+      // use countryData for-in loop
+        // log data if success
+        // displayUSData()
 
-  // else if countryData.state.neighborhoods.length > 0
-    // use countryData.state.neighborhoods map
-      // log data if success
-      // displayData()
+    // if countryData.state.neighborhoods.length === 0
+      // getData.area(stateX)
+      // store resultArray in countryData.stateX.neighborhood
 
-  // else catch error
+    // else if countryData.state.neighborhoods.length > 0
+      // use countryData.state.neighborhoods map
+        // log data if success
+        // displayStateData()
 
-})();
+    // else catch error
+  }
+
+  // initialize map
+  log('app loaded');
+  gmap.init();
+  // initialize data and display markers
+  // cache initial data in countryData object
+  countryData = initializeData();
+
+})(jQuery);
