@@ -115,23 +115,6 @@ house_data.js
     }
   */
 
-  function initializeData() {
-    log("initialize markers");
-    // if countryData doesn't exist
-    if ($.isEmptyObject(countryData)) {
-      // resultObject = getDate.state()
-      var resultObjects = getData.state();
-      
-      // displayData()
-      for (var object in resultObjects) {
-        displayUSData(object);
-      }
-      return resultObjects;
-    } else {
-      log("error, data is not refreshed");
-    }
-  }
-
   function processRequest() {
     // get form data
     // if form.option.text() === 'all states'
@@ -154,8 +137,10 @@ house_data.js
   // initialize map
   log('app loaded');
   gmap.init();
-  // initialize data and display markers
-  // cache initial data in countryData object
-  countryData = initializeData();
+  // initialize data from all states
+  getData.from('All States');
+
+  // get form data
+  // getData.from(selectedOptionState, time, dataType)
 
 })(jQuery);

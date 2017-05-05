@@ -22,8 +22,8 @@
       <form class="js-search-location row no-margin">
         <select name="data-type" class="custom-select dd-data col-sm-3 col-xs-6">
           <option selected>Choose Data...</option>
-          <option value="1">House Price</option>
-          <option value="3">Price Changes</option>
+          <option value="price">House Price</option>
+          <option value="priceChg">Price Changes</option>
         </select>
 
         <select name="year" class="custom-select dd-time col-sm-4 col-xs-6">
@@ -32,12 +32,11 @@
           <option value="3">3 years</option>
           <option value="5">5 years</option>
           <option value="10">10 years</option>
-          <option value="20">20 years</option>
-          <option value="30">30 years</option>
         </select>
 
         <select name="state" class="custom-select dd-state col-sm-4 col-xs-10">
           <option selected>Choose State...</option>
+          <option value="All States">All States</option>
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
           <option value="AZ">Arizona</option>
@@ -91,7 +90,7 @@
           <option value="WY">Wyoming</option>
         </select> 
 
-        <button type="submit" class="btn btn-success glyphicon glyphicon-search col-sm-1 col-xs-2"></button>
+        <button type="submit" class="btn btn-success col-sm-1 col-xs-2">Search</button>
       </form>
     </nav>
   </main>
