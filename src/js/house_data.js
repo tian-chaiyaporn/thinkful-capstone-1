@@ -8,14 +8,6 @@ var getData = (function($){
   'use strict';
 
   var stateCodes = {};
-  /*
-    stateCodes = {
-      'ALL': 'All States',
-      'North Corolina' : '00001',
-      'New York' : '00002',
-      ...
-    }
-  */
 
   var areaCodes = {};
   /*
@@ -34,16 +26,13 @@ var getData = (function($){
     }
   */
 
-  var time = 30;
-  var dataType = 'none';
+  var time = 10;
+  var dataType = 'HousePrice';
+  var stateData = {};
 
   function from(area, time, dataType) {
-    if (typeof time !== 'undefined') {
-      time = time;
-    }
-    if (typeof dataType !== 'undefined') {
-      dataType = dataType;
-    }
+    if (typeof time !== 'undefined') {time = time;}
+    if (typeof dataType !== 'undefined') {dataType = dataType;}
     if (area === 'All States') {
       getStateCode();
     } else {
@@ -53,7 +42,6 @@ var getData = (function($){
 
   function getStateCode() {
     $.support.cors = true;
-    log("get state data");
     if ($.isEmptyObject(stateCodes)) {
       $.ajax({
         url: "state_code.json",
@@ -62,9 +50,8 @@ var getData = (function($){
         success: function (data) {
           getStateData(data);
         },
-        error: log("csv failed refreshed 2"),
-        complete: function () {
-          log("load csv completed");
+        error: function() {
+          log("csv failed refreshed 2");
         }
       });
     } else {
@@ -72,15 +59,12 @@ var getData = (function($){
     }
   }
 
-  var stateData = {};
-
   function getStateData(codes){
     if (!$.isEmptyObject(stateData)) {
       log('state data already exists');
-      log(stateData);
+      // make for-loop for buildInfo(stateData);
       return;
     }
-    log("get state data");
 
     stateCodes = codes;
     var url = 'https://www.quandl.com/' + 
@@ -97,29 +81,54 @@ var getData = (function($){
       urlArray.push(formatUrl);
       stateNameArray.push(stateName);
     }
-    var i = 0;
+    // please see makeAjaxSync to understand why i is set as -1
+    var i = -1;
     makeAjaxSync(urlArray, stateNameArray, i);
   }
 
   // ajax must be synchronous due to API limitation
+  // this function is a recursive function calling itself.
   function makeAjaxSync(urlArray, stateNameArray, i) {
-    log("make sync request: " + i);
-    if (i > Object.keys(stateCodes).length) {
+    
+    if (i >= 3/*Object.keys(stateCodes).length*/) {
       return;
     } else {
+      // set timeout to wait 1 second between call due to limitation
       setTimeout(function() {
-        $.ajax({
-          url: urlArray[i],
-          method: 'GET',
-          dataType: "json",
-          success: function (res) {
-            log(res);
-            i = i+1;
-            //makeAjaxSync(urlArray, stateNameArray, i);
-            cleanStateData(res, stateNameArray[i]);
-          },
-          error: log("state data failed: " + i)
-        });
+        // first, send an ajax to negate the setTimeout effect that
+        // pauses the first ajax call at one second
+        if (i === -1) {
+          log("make sync request: initialize -1 to negate setTimeout effect");
+          // reset i to 0 to avoid error
+          i = i+1;
+          $.ajax({
+            // this send request for urlArray[0]
+            url: urlArray[i+1],
+            success: function (res) {
+              // this also send request for urlArray[0]
+              makeAjaxSync(urlArray, stateNameArray, i);
+              cleanStateData(res, stateNameArray[i]);
+            }
+          });
+        } 
+        // data can now gets processed after 1 second for each request
+        else {
+          log("make sync request: " + i);
+           $.ajax({
+            url: urlArray[i],
+            method: 'GET',
+            dataType: "json",
+            success: function (res) {
+              i = i+1;
+              // recursive function is used to create synchronous operation
+              makeAjaxSync(urlArray, stateNameArray, i);
+              cleanStateData(res, stateNameArray[i]);
+            },
+            error: function () {
+              log("state data failed: " + i);
+            } 
+          });
+        }
       }, 1000);
     }
   }
@@ -137,7 +146,26 @@ var getData = (function($){
       PriceChangeYr5: percentChg(dat[0][1], 4 in dat ? dat[4][1] : 0),
       PriceChangeYr10: percentChg(dat[0][1], 9 in dat ? dat[9][1] : 0)
     };
-    log(stateData);
+    buildInfo(stateData, stateName);
+  }
+
+  function buildInfo(data, stateName) {
+    // get Latitude and Longitude of the state and build markers
+    var address = stateName + ' ' + stateName + ' United States';
+
+    // build information to be shown
+    var info = ['State: @state <br>',
+                '@dataType: @displayData <br>',
+                'Data over: @time years'];              
+    var displayData = dataType + 'Yr' + time;
+    info = info.join('')
+      .replace('@state', stateName)
+      .replace('@dataType', dataType)
+      .replace('@displayData', '$' + data[stateName][displayData].format(0,3,','))
+      .replace('@time', time);
+
+    // pass information to build markers
+    gmap.buildMarkers(stateName, address, info);
 
     // return result object
     /*
@@ -154,22 +182,12 @@ var getData = (function($){
           PriceChangeYr5: 35%,
           PriceChangeYr10: 60%
         },
-        state2: {
-          Lat: 0.000014,
-          Lng: 9.635495,
-          AvgHousePriceYr1: 1235677,
-          AvgHousePriceYr3: 1235677,
-          AvgHousePriceYr5: 1235677,
-          AvgHousePriceYr10: 1235677,
-          PriceChangeYr1: 10%,
-          PriceChangeYr3: 20%,
-          PriceChangeYr5: 35%,
-          PriceChangeYr10: 60%
-        },
         ...
       }
     */
   }
+
+  function getAreaCode(area) {}
 
   function getAreaData(stateX) {
     // look for all neighborhood + code in State and save in array
@@ -220,9 +238,9 @@ var getData = (function($){
     */
   }
 
-  function getAreaCode() {
+  function cleanAreaData(res, areaName) {}
 
-  }
+  function buildAreaInfo() {}
 
   return {
     from: from

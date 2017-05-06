@@ -30,7 +30,6 @@ gmap = (function($){
 
   function init(){
     log('gmap.init() loaded');
-
     settings.mapcanvas = $(".js-gmap");
 
     // Load Google Maps API async
@@ -42,8 +41,6 @@ gmap = (function($){
   }
 
   function load(){
-    log("gmap.load() success");
-
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.id = 'new-gmap';
@@ -53,8 +50,6 @@ gmap = (function($){
   }
 
   function build(){
-    log("gmap.build() success");
-
     var mapOptions = $.extend({}, settings.mapDefaults, {
       zoom: settings.zoom,
       center: new google.maps.LatLng(settings.latCenter,settings.lonCenter),
@@ -66,19 +61,60 @@ gmap = (function($){
     map = new google.maps.Map(settings.mapcanvas[0], mapOptions);
   }
 
-  //function moveLocation(LatLng) {}
+  // set scope variables for caching
+  var StateLatLng = [];
+  var AreaLatLng = [];
 
-  //function displayMarker(latLng, ...) {}
-    // get info
-    // create marker
-      // or use d3.js to create overlay
-    // create infoWindow
-      // or use d3.js overlay
-    // bind to map
+  function buildMarkers(title, address, info){
+    // if StateLatLng already exist, skip this step
+    var geocoder = new google.maps.Geocoder();
+    var latLng = [];
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        
+        if (status == google.maps.GeocoderStatus.OK) {
+            latLng[0] = results[0].geometry.location.lat();
+            latLng[1] = results[0].geometry.location.lng();
+            StateLatLng[title] = latLng;
+            displayMarker(latLng, title, info);
+        }
+    });
+  }
+
+  function moveToLocation(lat, lng){
+    var center = new google.maps.LatLng(lat, lng);
+    // using global variable:
+    map.panTo(center);
+    map.setZoom(6);
+  }
+
+  var markers = []
+
+  function displayMarker(latLng, title, info) {
+    var myinfowindow = new google.maps.InfoWindow({
+      content: info
+    });
+
+    var marker = new google.maps.Marker({
+      position: {lat: latLng[0], lng: latLng[1]},
+      map: map,
+      title: title,
+      infowindow: myinfowindow
+    });
+
+    markers.push(marker);
+
+    google.maps.event.addListener(marker, 'click', function() {
+      markers.map(function(marker){
+        marker.infowindow.close();
+      });
+      this.infowindow.open(map, this);
+    });
+  }
 
   return {
     init: init,
-    build: build
+    build: build,
+    buildMarkers: buildMarkers
   };
 
 })(jQuery);
