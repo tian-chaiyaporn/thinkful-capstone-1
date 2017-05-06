@@ -1,7 +1,9 @@
 /* requires:
 global.js
 map.js
-house_data.js
+state_data.js
+area_data.js
+make_ajax.js
 */
 
 (function($) {
@@ -116,29 +118,28 @@ house_data.js
   */
 
   function processRequest() {
-    // get form data
-    // if form.option.text() === 'all states'
-      // use countryData for-in loop
-        // log data if success
-        // displayUSData()
+    $('.js-search-location').submit(function(e){
+      e.preventDefault();
+      var dataType = $( "#js-data-type option:selected" ).val();
+      var time = $( "#js-year option:selected" ).val();
+      var optState = $( "#js-state option:selected" ).val();
+      
+      gmap.removeMarkers();
 
-    // if countryData.state.neighborhoods.length === 0
-      // getData.area(stateX)
-      // store resultArray in countryData.stateX.neighborhood
-
-    // else if countryData.state.neighborhoods.length > 0
-      // use countryData.state.neighborhoods map
-        // log data if success
-        // displayStateData()
-
-    // else catch error
+      if (optState === 'All States') {
+        getStateData.from(optState, time, dataType);
+      } else {
+        getAreaData.from(optState, time, dataType);
+      }
+    });
   }
 
   // initialize map
   log('app loaded');
+  processRequest();
   gmap.init();
   // initialize data from all states
-  getData.from('All States');
+  getStateData.from('All States');
 
   // get form data
   // getData.from(selectedOptionState, time, dataType)

@@ -87,7 +87,7 @@ gmap = (function($){
     map.setZoom(6);
   }
 
-  var markers = []
+  var markers = [];
 
   function displayMarker(latLng, title, info) {
     var myinfowindow = new google.maps.InfoWindow({
@@ -104,17 +104,22 @@ gmap = (function($){
     markers.push(marker);
 
     google.maps.event.addListener(marker, 'click', function() {
-      markers.map(function(marker){
-        marker.infowindow.close();
-      });
+      removeMarkers();
       this.infowindow.open(map, this);
+    });
+  }
+
+  function removeMarkers() {
+    markers.map(function(marker){
+      marker.infowindow.close();
     });
   }
 
   return {
     init: init,
     build: build,
-    buildMarkers: buildMarkers
+    buildMarkers: buildMarkers,
+    removeMarkers: removeMarkers
   };
 
 })(jQuery);
