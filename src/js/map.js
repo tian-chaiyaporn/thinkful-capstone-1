@@ -62,11 +62,10 @@ gmap = (function($){
   }
 
   // set scope variables for caching
-  var StateLatLng = [];
-  var AreaLatLng = [];
+  var Coordinates = [];
 
   function buildMarkers(title, address, info){
-    // if StateLatLng already exist, skip this step
+    // if Coordinates already exist, skip this step
     var geocoder = new google.maps.Geocoder();
     var latLng = [];
     geocoder.geocode({ 'address': address }, function (results, status) {
@@ -74,17 +73,28 @@ gmap = (function($){
         if (status == google.maps.GeocoderStatus.OK) {
             latLng[0] = results[0].geometry.location.lat();
             latLng[1] = results[0].geometry.location.lng();
-            StateLatLng[title] = latLng;
+            Coordinates[title] = latLng;
             displayMarker(latLng, title, info);
         }
     });
   }
 
-  function moveToLocation(lat, lng){
+  function moveToLocation(area){
+    var lat = Coordinates[area][0];
+    var lng = Coordinates[area][1];
     var center = new google.maps.LatLng(lat, lng);
     // using global variable:
     map.panTo(center);
     map.setZoom(6);
+  }
+
+  function zoomOut(){
+    var lat = 37.09024;
+    var lng = -96.712891;
+    var center = new google.maps.LatLng(lat, lng);
+    // using global variable:
+    map.panTo(center);
+    map.setZoom(4);
   }
 
   var markers = [];
@@ -119,7 +129,9 @@ gmap = (function($){
     init: init,
     build: build,
     buildMarkers: buildMarkers,
-    removeMarkers: removeMarkers
+    removeMarkers: removeMarkers,
+    moveToLocation: moveToLocation,
+    zoomOut: zoomOut
   };
 
 })(jQuery);
