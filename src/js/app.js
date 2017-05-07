@@ -1,7 +1,10 @@
 /* requires:
 global.js
 map.js
+markers.js
 make_ajax.js
+info_display.js
+notify.js
 get_data.js
 */
 
@@ -15,7 +18,8 @@ get_data.js
       var time = $( "#js-year option:selected" ).val();
       var optState = $( "#js-state option:selected" ).val();
       
-      gmap.removeMarkers();
+      mark.removeMarkers();
+      notify.waitFinished();
       getData.from(optState, time, dataType);
     });
   }
@@ -26,5 +30,6 @@ get_data.js
   gmap.init();
   // initialize data from all states
   getData.from('All States');
+  //notify.waitTime(10);
 
 })(jQuery);

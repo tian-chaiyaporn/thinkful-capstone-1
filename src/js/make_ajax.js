@@ -4,7 +4,6 @@ map.js
 */
 
 var makeAjax = (function($){
-  
   'use strict';
 
   function asyncGetCode(area, url, time, dataType) {
@@ -13,7 +12,7 @@ var makeAjax = (function($){
       method: 'GET',
       dataType: "json",
       success: function (data) {
-        getData.getAreaData(area, data, time, dataType);
+        getData.cleanAreaCode(area, data, time, dataType);
       },
       error: function() {
         log("fail to get code");
@@ -21,10 +20,29 @@ var makeAjax = (function($){
     });
   }
 
+  // function to stop calls if search is submitted more than once
+  var stop = 0;
+  function stopAjax() {
+    $('.js-search-location').submit(function(e){
+      e.preventDefault();
+      if (stop === 1){
+        stop = 0;
+      } else {
+        stop = 1;
+      }
+    });
+  }
+
+  stopAjax();
+
   // ajax for house price data must be synchronous due to API limitation
   // hence, this function is a recursive function calling itself.
   function sync(area, urlArray, nameArray, i, time, dataType) {
-    if (i >= 2/*Object.keys(stateCodes).length*/) {
+    console.log(stop);
+    if (i >= urlArray.length || stop === 1) {
+      console.log('all data has loaded');
+      notify.waitFinished();
+      stop = 0;
       return;
     } else {
       // set timeout to wait 1 second between call due to limitation
@@ -51,7 +69,7 @@ var makeAjax = (function($){
         // data can now gets processed after 1 second for each request
         else {
           log("make sync request: " + i);
-           $.ajax({
+          $.ajax({
             url: urlArray[i],
             method: 'GET',
             dataType: "json",
@@ -69,9 +87,24 @@ var makeAjax = (function($){
             } 
           });
         } // end second if-else
-      }, 1000); // end setTimeout
+      }, 950); // end setTimeout
     } // end first if-else
   } // end function
+
+  // function getYoutubeVideo(searchTerm, callback) {
+  //   var settings = {
+  //     url: 'https://www.googleapis.com/youtube/v3/search',
+  //     data: {
+  //       part: 'snippet',
+  //       key: 'AIzaSyAb_RPHXrU7J335VQfKb7Z5Cd0mWv2QVCA',
+  //       q: searchTerm,
+  //     },
+  //     dataType: 'json',
+  //     type: 'GET',
+  //     success: callback
+  //   };
+  //   $.ajax(settings);
+  // }
 
   return {
     sync: sync,

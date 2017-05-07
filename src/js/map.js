@@ -61,77 +61,9 @@ gmap = (function($){
     map = new google.maps.Map(settings.mapcanvas[0], mapOptions);
   }
 
-  // set scope variables for caching
-  var Coordinates = [];
-
-  function buildMarkers(title, address, info){
-    // if Coordinates already exist, skip this step
-    var geocoder = new google.maps.Geocoder();
-    var latLng = [];
-    geocoder.geocode({ 'address': address }, function (results, status) {
-        
-        if (status == google.maps.GeocoderStatus.OK) {
-            latLng[0] = results[0].geometry.location.lat();
-            latLng[1] = results[0].geometry.location.lng();
-            Coordinates[title] = latLng;
-            displayMarker(latLng, title, info);
-        }
-    });
-  }
-
-  function moveToLocation(area){
-    var lat = Coordinates[area][0];
-    var lng = Coordinates[area][1];
-    var center = new google.maps.LatLng(lat, lng);
-    // using global variable:
-    map.panTo(center);
-    map.setZoom(6);
-  }
-
-  function zoomOut(){
-    var lat = 37.09024;
-    var lng = -96.712891;
-    var center = new google.maps.LatLng(lat, lng);
-    // using global variable:
-    map.panTo(center);
-    map.setZoom(4);
-  }
-
-  var markers = [];
-
-  function displayMarker(latLng, title, info) {
-    var myinfowindow = new google.maps.InfoWindow({
-      content: info
-    });
-
-    var marker = new google.maps.Marker({
-      position: {lat: latLng[0], lng: latLng[1]},
-      map: map,
-      title: title,
-      infowindow: myinfowindow
-    });
-
-    markers.push(marker);
-
-    google.maps.event.addListener(marker, 'click', function() {
-      removeMarkers();
-      this.infowindow.open(map, this);
-    });
-  }
-
-  function removeMarkers() {
-    markers.map(function(marker){
-      marker.infowindow.close();
-    });
-  }
-
   return {
     init: init,
-    build: build,
-    buildMarkers: buildMarkers,
-    removeMarkers: removeMarkers,
-    moveToLocation: moveToLocation,
-    zoomOut: zoomOut
+    build: build
   };
 
 })(jQuery);

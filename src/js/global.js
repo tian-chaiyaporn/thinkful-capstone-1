@@ -4,9 +4,9 @@
 // 'use strict';
 // })();
 
-var 
-  debug = true,
-  log = function(s){
+var debug = true;
+
+var log = function(s){
   if(debug) {
     console.log(s);
   }
@@ -35,10 +35,11 @@ Number.prototype.format = function(n, x, s, c) {
     return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
 };
 
-// Taken from https://gist.github.com/CalebGrove/c285a9510948b633aa47
-// for transforming state name to its abbreviation and vice versa
+/** 
+ * Taken from https://gist.github.com/CalebGrove/c285a9510948b633aa47
+ * for transforming state name to its abbreviation and vice versa
+ */
 var abbrState = function(input, to){
-    
     var states = [
         ['Arizona', 'AZ'],
         ['Alabama', 'AL'],
@@ -109,4 +110,4 @@ var abbrState = function(input, to){
             }
         }    
     }
-}
+};

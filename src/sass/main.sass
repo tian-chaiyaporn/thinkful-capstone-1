@@ -23,6 +23,7 @@ $theme-dark-color: #aaf
 
 .full-screen
   height: 100%
+  overflow: hidden
   position: absolute
   width: 100%
 
@@ -31,6 +32,40 @@ $theme-dark-color: #aaf
 
 .full-height
   height: 100%
+
+.notify-box
+  z-index: 1000
+
+  .exit-buttom
+    border-radius: 10px
+    font-size: 20px
+    position: absolute
+    right: 20px
+    top: 20px
+    z-index: 2000
+
+  .countdowntimer
+    display: inline-block
+    width: 100px
+
+  .message
+    left: 50%
+    max-width: 500px
+    position: absolute
+    top: 50%
+    transform: translate(-50%, -60%);
+    z-index: 1000
+
+    .h4, 
+    .h2
+      margin: 0
+
+  .translucent-backgroud
+    background-color: $theme-light-color
+    filter: alpha(opacity=50)
+    opacity: .7
+
+
 
 .navbar-fixed-bottom
   background-color: $theme-dark-color
