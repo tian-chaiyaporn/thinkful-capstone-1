@@ -16,7 +16,17 @@
     
   </header>
   <main class="full-screen">
-    <div class="full-screen js-gmap">
+    <div class="js-notify full-screen notify-box animated">
+      <div class="full-screen translucent-backgroud"></div>
+        <button class="js-notify-close exit-buttom btn btn-primary" onclick="notify.waitFinished()">close</button>
+        <div class="message">
+          <p class="js-notify-message h4 no-padding"></p>
+          <p class="js-notify-timer h2 no-padding animated countdowntimer" id="countdowntimer"></p>
+          <p class="js-notify-message-last h4 no-padding"></p>
+        </div>
+        
+    </div>
+    <div class="js-gmap full-screen">
       <!-- map goes here -->
     </div>
 
@@ -47,7 +57,7 @@
           <option value="Colorado">Colorado</option>
           <option value="Connecticut">Connecticut</option>
           <option value="Delaware">Delaware</option>
-          <option value="District Of Columbia">District Of Columbia</option>
+          <option value="District of Columbia">District of Columbia</option>
           <option value="Florida">Florida</option>
           <option value="Georgia">Georgia</option>
           <option value="Hawaii">Hawaii</option>
