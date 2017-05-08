@@ -7,22 +7,19 @@ info_display.js
 notify.js
 */
 
-var getData = (function($){
+var getData = (function($) {
   'use strict';
 
   var stateCodes = {};
   var stateData = {};
-
   var areaCodes = {};
   var areaData = {};
-
   var area_param;
-
   var currentArea = 'All States';
 
   function from(area, time, dataType) {
     if (typeof area === 'undefined') {area = 'All States';}
-    if (typeof time === 'undefined') {time = 10;}
+    if (typeof time === 'undefined') {time = 1;}
     if (typeof dataType === 'undefined') {dataType = 'HousePrice';}
     if (currentArea !== area){
       if (area === 'All States'){mark.zoomOut();}
@@ -93,7 +90,7 @@ var getData = (function($){
     getAreaData(area, area_param, time, dataType);
   }
 
-  function getAreaData(area, area_param, time, dataType){
+  function getAreaData(area, area_param, time, dataType) {
     var codeToCompute;
 
     // build parameters to pass into ajax calls

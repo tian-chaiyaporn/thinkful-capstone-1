@@ -5,7 +5,7 @@ markers.js
 make_ajax.js
 */
 
-var info = (function($){
+var info = (function($) {
   'use strict';
 
   function buildInfo(area, data, areaName, time, dataType) {
@@ -22,9 +22,10 @@ var info = (function($){
     var dataSrc = area === 'All States' ? data : data[area];
     var resultData = dataSrc[areaName][displayDataKey];
     var displayData = resultData === 0 ? 'no data' : resultData.format(2,3,',','.');
+    var markerSize;
     
-    if (dataType === 'HousePrice') {displayData = '$' + displayData;} 
-    if (dataType === 'PriceChange') {displayData = displayData + '%';}
+    if (dataType === 'HousePrice') {displayData = '$' + displayData; markerSize = resultData/100;} 
+    if (dataType === 'PriceChange') {displayData = displayData + '%'; markerSize = resultData*10000;}
 
     info = info.join('')
       .replace('@place', areaName)
@@ -33,7 +34,7 @@ var info = (function($){
       .replace('@time', time);
 
     // pass information to build markers
-    mark.buildMarkers(area, areaName, address, info);
+    mark.buildMarkers(area, areaName, address, info, markerSize);
   }
 
   return {

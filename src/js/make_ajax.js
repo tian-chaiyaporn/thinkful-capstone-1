@@ -1,9 +1,11 @@
 /* requires:
 global.js
 map.js
+markers.js
+notify.js
 */
 
-var makeAjax = (function($){
+var makeAjax = (function($) {
   'use strict';
 
   function asyncGetCode(area, url, time, dataType) {
@@ -42,7 +44,6 @@ var makeAjax = (function($){
     if (i >= urlArray.length || stop === 1) {
       console.log('all data has loaded');
       notify.waitFinished();
-      stop = 0;
       return;
     } else {
       // set timeout to wait 1 second between call due to limitation
@@ -87,7 +88,7 @@ var makeAjax = (function($){
             } 
           });
         } // end second if-else
-      }, 950); // end setTimeout
+      }, 1000); // end setTimeout
     } // end first if-else
   } // end function
 
