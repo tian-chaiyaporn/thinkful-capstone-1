@@ -5860,26 +5860,27 @@ button.close {
     .notify-box .message .h2 {
       margin: 0; }
   .notify-box .translucent-backgroud {
-    background-color: #eef;
+    background-color: #7290b8;
     filter: alpha(opacity=50);
     opacity: .7; }
 
 .navbar-fixed-bottom {
-  background-color: #aaf;
+  background-color: #0f294b;
   padding: 10px; }
 
 .dd-data, .dd-time, .dd-state {
   -webkit-appearance: none;
+  color: #eef;
   border: 0;
   border-radius: 0;
   font-size: 14px;
   height: 50px; }
 
 .dd-data {
-  background-color: #eef; }
+  background-color: #7290b8; }
 
 .dd-time {
-  background-color: #ddf; }
+  background-color: #52729d; }
 
 .dd-state {
-  background-color: #ccf; }
+  background-color: #354459; }
