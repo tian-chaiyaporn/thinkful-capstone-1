@@ -16,6 +16,14 @@ var mark = (function($){
         .setContent(info);
       return;
     }
+    var latLag = getLatLng('Wall St 123, Bla-Bla-Bla', function (geoposition) {
+      console.log('The object is located at', geoposition);
+    });
+    
+    displayMarker(area, latLng, title, info, markerSize);
+  }
+
+  function getLatLng(address, cb) {
     var geocoder = new google.maps.Geocoder();
     var latLng = [];
     geocoder.geocode({ 'address': address }, function (results, status) {
@@ -23,7 +31,8 @@ var mark = (function($){
         latLng[0] = results[0].geometry.location.lat();
         latLng[1] = results[0].geometry.location.lng();
         Coordinates[title] = latLng;
-        displayMarker(area, latLng, title, info, markerSize);
+
+        cb(latLng);
       }
     });
   }
@@ -64,10 +73,11 @@ var mark = (function($){
       infowindow: myinfowindow
     });
 
-    log('marker for ' + title);
-    log(marker);
-    markers.push(marker);
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    // set animation time out so it drops only once
+    setTimeout(function(){ marker.setAnimation(null); }, 400);
 
+    markers.push(marker);
     google.maps.event.addListener(marker, 'click', function() {
       removeMarkers();
       this.infowindow.open(map, this);
@@ -81,10 +91,20 @@ var mark = (function($){
   }
 
   function moveToLocation(area) {
+    if ($.isEmptyObject(Coordinates[area])){
+      var geocoder = new google.maps.Geocoder();
+      var latLng = [];
+      geocoder.geocode({ 'address': area + ' United States' }, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          latLng[0] = results[0].geometry.location.lat();
+          latLng[1] = results[0].geometry.location.lng();
+          Coordinates[area] = latLng;
+        }
+      });
+    }
     var lat = Coordinates[area][0];
     var lng = Coordinates[area][1];
     var center = new google.maps.LatLng(lat, lng);
-    // using global variable:
     map.panTo(center);
     map.setZoom(6);
   }

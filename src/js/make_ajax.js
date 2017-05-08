@@ -30,6 +30,8 @@ var makeAjax = (function($) {
       if (stop === 1){
         stop = 0;
       } else {
+        //$('.js-search-bt').html('Loading...');
+        $('.js-search-btn').html('Search');
         stop = 1;
       }
     });
@@ -44,6 +46,8 @@ var makeAjax = (function($) {
     if (i >= urlArray.length || stop === 1) {
       console.log('all data has loaded');
       notify.waitFinished();
+      if (i >= urlArray.length) {stop = 1; $('.js-search-btn').html('Search');}
+      if (stop === 1) {$('.js-search-btn').html('Search');}
       return;
     } else {
       // set timeout to wait 1 second between call due to limitation

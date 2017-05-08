@@ -14,6 +14,7 @@ var getData = (function($) {
   var stateData = {};
   var areaCodes = {};
   var areaData = {};
+
   var area_param;
   var currentArea = 'All States';
 
@@ -21,21 +22,20 @@ var getData = (function($) {
     if (typeof area === 'undefined') {area = 'All States';}
     if (typeof time === 'undefined') {time = 1;}
     if (typeof dataType === 'undefined') {dataType = 'HousePrice';}
+    $('.js-search-btn').html('Loading...');
+
     if (currentArea !== area){
       if (area === 'All States'){mark.zoomOut();}
-      else {log('from');mark.moveToLocation(area);}
+      else {mark.moveToLocation(area);}
       currentArea = area;
-      log('currentArea redefined');
     }
 
-    if (area === 'All States') {
-      if (!$.isEmptyObject(stateData)) {
-        log('state data already exists');
-        for (var state in stateData) {
-          info.buildInfo(area, stateData, state, time, dataType);
-        }
-        return;
+    if (area === 'All States' && !$.isEmptyObject(stateData)) {
+      log('state data already exists');
+      for (var state in stateData) {
+        info.buildInfo(area, stateData, state, time, dataType);
       }
+      return;
     }
 
     if (!$.isEmptyObject(areaData[area])) {
@@ -131,6 +131,9 @@ var getData = (function($) {
   function cleanData(area, res, areaName, time, dataType) {
     var dat = res.dataset.data;
     var dataToCompute = {
+      house_prices: {
+        '1': 1
+      },
       HousePriceYr1: 0 in dat ? dat[0][1] : 0,
       // check to see if index of array exists in case dataset is not complete
       HousePriceYr3: 2 in dat ? dat[2][1] : 0,
