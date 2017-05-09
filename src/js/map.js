@@ -52,7 +52,7 @@ gmap = (function($) {
   function build() {
     var mapOptions = $.extend({}, settings.mapDefaults, {
       zoom: settings.zoom,
-      center: new google.maps.LatLng(settings.latCenter,settings.lonCenter),
+      center: new google.maps.LatLng(settings.latCenter, settings.lonCenter),
       zoomControlOptions: {position: google.maps.ControlPosition.LEFT_CENTER},
       maxZoom: settings.maxZoom,
       minZoom: settings.minZoom,

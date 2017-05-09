@@ -25,13 +25,15 @@ var info = (function($) {
     var markerSize;
     
     if (dataType === 'HousePrice') {displayData = '$' + displayData; markerSize = resultData/100;} 
-    if (dataType === 'PriceChange') {displayData = displayData + '%'; markerSize = resultData*10000;}
+    if (dataType === 'PriceChange') {displayData = displayData + '%'; markerSize = resultData*1000;}
 
     info = info.join('')
       .replace('@place', areaName)
       .replace('@dataType', dataType)
       .replace('@displayData', displayData)
       .replace('@time', time);
+
+    log(info);
 
     // pass information to build markers
     mark.buildMarkers(area, areaName, address, info, markerSize);

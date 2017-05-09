@@ -9,6 +9,7 @@ var mark = (function($){
   var Coordinates = [];
 
   function buildMarkers(area, title, address, info, markerSize) {
+    log("buildMarkers()");
     if (!$.isEmptyObject(Coordinates[title])) {
       markers
         .find(function(marker){return marker.title === title;})
@@ -16,14 +17,13 @@ var mark = (function($){
         .setContent(info);
       return;
     }
-    var latLag = getLatLng('Wall St 123, Bla-Bla-Bla', function (geoposition) {
-      console.log('The object is located at', geoposition);
+    getLatLng(address, title, function(){
+      displayMarker(area, title, info, markerSize);
     });
-    
-    displayMarker(area, latLng, title, info, markerSize);
   }
 
-  function getLatLng(address, cb) {
+  function getLatLng(address, title, cb) {
+    log("getLatLng()");
     var geocoder = new google.maps.Geocoder();
     var latLng = [];
     geocoder.geocode({ 'address': address }, function (results, status) {
@@ -31,15 +31,15 @@ var mark = (function($){
         latLng[0] = results[0].geometry.location.lat();
         latLng[1] = results[0].geometry.location.lng();
         Coordinates[title] = latLng;
-
-        cb(latLng);
+        cb();
       }
     });
   }
 
   var markers = [];
 
-  function displayMarker(area, latLng, title, info, markerSize) {
+  function displayMarker(area, title, info, markerSize) {
+    log("displayMarker()");
     var myinfowindow = new google.maps.InfoWindow({
       content: info
     });
@@ -48,7 +48,7 @@ var mark = (function($){
     var markerColor = 'red';
 
     if (area !== 'All States'){
-      var center = new google.maps.LatLng(latLng[0], latLng[1]);
+      var center = new google.maps.LatLng(Coordinates[title][0], Coordinates[title][1]);
       map.panTo(center);
       map.setZoom(8);
       denominator = 500;
@@ -66,7 +66,7 @@ var mark = (function($){
     };
 
     var marker = new google.maps.Marker({
-      position: {lat: latLng[0], lng: latLng[1]},
+      position: {lat: Coordinates[title][0], lng: Coordinates[title][1]},
       icon: iconMarker,
       map: map,
       title: title,
@@ -91,22 +91,17 @@ var mark = (function($){
   }
 
   function moveToLocation(area) {
+    log('moveToLocation()');
     if ($.isEmptyObject(Coordinates[area])){
-      var geocoder = new google.maps.Geocoder();
-      var latLng = [];
-      geocoder.geocode({ 'address': area + ' United States' }, function (results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          latLng[0] = results[0].geometry.location.lat();
-          latLng[1] = results[0].geometry.location.lng();
-          Coordinates[area] = latLng;
-        }
+      var address = area + ' United States';
+      getLatLng(address, area, function(){
+        moveToLocation(area);
       });
-    }
-    var lat = Coordinates[area][0];
-    var lng = Coordinates[area][1];
-    var center = new google.maps.LatLng(lat, lng);
-    map.panTo(center);
-    map.setZoom(6);
+    } else {
+      var center = new google.maps.LatLng(Coordinates[area][0], Coordinates[area][1]);
+      map.panTo(center);
+      map.setZoom(6);
+    } 
   }
 
   function zoomOut() {
