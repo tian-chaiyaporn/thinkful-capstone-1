@@ -7,9 +7,9 @@ var mark = (function($){
 
   // set scope variables for caching
   var Coordinates = [];
+  var markers = [];
 
   function buildMarkers(area, title, address, info, markerSize) {
-    log("buildMarkers()");
     if (!$.isEmptyObject(Coordinates[title])) {
       markers
         .find(function(marker){return marker.title === title;})
@@ -35,8 +35,6 @@ var mark = (function($){
       }
     });
   }
-
-  var markers = [];
 
   function displayMarker(area, title, info, markerSize) {
     log("displayMarker()");
@@ -104,20 +102,10 @@ var mark = (function($){
     } 
   }
 
-  function zoomOut() {
-    var lat = 37.09024;
-    var lng = -96.712891;
-    var center = new google.maps.LatLng(lat, lng);
-    // using global variable:
-    map.panTo(center);
-    map.setZoom(4);
-  }
-
   return {
     buildMarkers: buildMarkers,
     removeMarkers: removeMarkers,
-    moveToLocation: moveToLocation,
-    zoomOut: zoomOut
+    moveToLocation: moveToLocation
   };
 
 })(jQuery);

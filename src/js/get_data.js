@@ -3,7 +3,7 @@ global.js
 map.js
 markers.js
 make_ajax.js
-info_display.js
+process_data.js
 notify.js
 */
 

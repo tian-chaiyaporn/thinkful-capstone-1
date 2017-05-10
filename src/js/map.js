@@ -1,7 +1,6 @@
 /* requires:
 global.js
 */
-
 // gmap function taken and modified from https://gist.github.com/lekkerduidelijk/9831313
 
 var map,
@@ -272,9 +271,19 @@ gmap = (function($) {
     map = new google.maps.Map(settings.mapcanvas[0], mapOptions);
   }
 
+  function zoomOut() {
+    var lat = 37.09024;
+    var lng = -96.712891;
+    var center = new google.maps.LatLng(lat, lng);
+    // using global variable:
+    map.panTo(center);
+    map.setZoom(4);
+  }
+
   return {
     init: init,
-    build: build
+    build: build,
+    zoomOut: zoomOut
   };
 
 })(jQuery);

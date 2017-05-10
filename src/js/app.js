@@ -2,11 +2,15 @@
 global.js
 map.js
 markers.js
+request_config.js
 make_ajax.js
-info_display.js
+process_data.js
 notify.js
-get_data.js
+get_state.js
+get_area.js
 */
+var CurrentTime = 1;
+var ChosenDataType = 'HousePrice';
 
 (function($) {
   'use strict';
@@ -14,13 +18,17 @@ get_data.js
   function processRequest() {
     $('.js-search-location').submit(function(e){
       e.preventDefault();
-      var dataType = $( "#js-data-type option:selected" ).val();
-      var time = $( "#js-year option:selected" ).val();
       var optState = $( "#js-state option:selected" ).val();
+      ChosenDataType = $( "#js-data-type option:selected" ).val();
+      CurrentTime = $( "#js-year option:selected" ).val();
       
       mark.removeMarkers();
       notify.waitFinished();
-      getData.from(optState, time, dataType);
+      if (optState === 'All States') {
+        stateRepo.getState();
+        return;
+      }
+      neighborhoodRepo.getNeighborhood(optState);
     });
   }
 
@@ -29,7 +37,7 @@ get_data.js
   processRequest();
   gmap.init();
   // initialize data from all states
-  getData.from('All States');
+  stateRepo.getState();
   //notify.waitTime(10);
 
 })(jQuery);

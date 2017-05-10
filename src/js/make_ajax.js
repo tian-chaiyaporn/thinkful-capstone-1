@@ -8,13 +8,13 @@ notify.js
 var makeAjax = (function($) {
   'use strict';
 
-  function asyncGetCode(area, url, time, dataType) {
+  function asyncGetCode(url) {
     $.ajax({
       url: url,
       method: 'GET',
       dataType: "json",
       success: function (data) {
-        getData.cleanAreaCode(area, data, time, dataType);
+        request.cleanCode(data);
       },
       error: function() {
         log("fail to get code");
@@ -30,18 +30,15 @@ var makeAjax = (function($) {
       if (stop === 1){
         stop = 0;
       } else {
-        //$('.js-search-bt').html('Loading...');
         $('.js-search-btn').html('Search');
         stop = 1;
       }
     });
   }
 
-  stopAjax();
-
   // ajax for house price data must be synchronous due to API limitation
   // hence, this function is a recursive function calling itself.
-  function sync(area, urlArray, nameArray, i, time, dataType) {
+  function sync(area, urlArray, nameArray, i) {
     console.log(stop);
     if (i >= urlArray.length || stop === 1) {
       console.log('all data has loaded');
@@ -61,13 +58,13 @@ var makeAjax = (function($) {
           $.ajax({
             url: urlArray[i+1],
             success: function (res) {
-              sync(area, urlArray, nameArray, i, time, dataType);
-              getData.cleanData(area, res, nameArray[i], time, dataType);
+              sync(area, urlArray, nameArray, i);
+              info.cleanData(area, res, nameArray[i]);
             },
             error: function () {
               log("initialize sync ajax failed: " + i);
               log("moving on to new ajax for next data:");
-              sync(area, urlArray, nameArray, i, time, dataType);
+              sync(area, urlArray, nameArray, i);
             } 
           });
         }
@@ -79,37 +76,24 @@ var makeAjax = (function($) {
             method: 'GET',
             dataType: "json",
             success: function (res) {
-              getData.cleanData(area, res, nameArray[i], time, dataType);
+              info.cleanData(area, res, nameArray[i]);
               i = i+1;
               // recursive function is used to create synchronous operation
-              sync(area, urlArray, nameArray, i, time, dataType);
+              sync(area, urlArray, nameArray, i);
             },
             error: function () {
               log("load data failed: " + i + "for" + nameArray[i]);
               log("moving on to new ajax for next data:");
               i = i+1;
-              sync(area, urlArray, nameArray, i, time, dataType);
+              sync(area, urlArray, nameArray, i);
             } 
           });
         } // end second if-else
       }, 1000); // end setTimeout
     } // end first if-else
-  } // end function
+  } // end sync function
 
-  // function getYoutubeVideo(searchTerm, callback) {
-  //   var settings = {
-  //     url: 'https://www.googleapis.com/youtube/v3/search',
-  //     data: {
-  //       part: 'snippet',
-  //       key: 'AIzaSyAb_RPHXrU7J335VQfKb7Z5Cd0mWv2QVCA',
-  //       q: searchTerm,
-  //     },
-  //     dataType: 'json',
-  //     type: 'GET',
-  //     success: callback
-  //   };
-  //   $.ajax(settings);
-  // }
+  stopAjax();
 
   return {
     sync: sync,

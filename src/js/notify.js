@@ -5,12 +5,10 @@ global.js
 var notify = (function($) {
   'use strict';
 
-  var waitString = ['Because this is a free service. ',
-                    'There is an API limitation, please wait for '];
-
-  var waitStringAfter = ' seconds for data to load';
-
+  var waitString = 'Because this is a free service there is an API limitation. Please wait for ';
+  var waitStringAfter = 'seconds for data to load';
   var noDataString = "sorry, there doesn't seem to be data for @state";
+  var unstableConnect = "please wait a little bit more, your connection seems to be unstable...";
 
   function noData(state) {
     $('.js-notify-message').html(noDataString.replace('@state', state));
@@ -22,7 +20,7 @@ var notify = (function($) {
 
   function waitTime(n) {
     // set countdown animation
-    $('.js-notify-message').html(waitString.join(''));
+    $('.js-notify-message').html(waitString);
     timer(n);
     $('.js-notify-message-last').html(waitStringAfter);
     $('.js-notify').removeClass("slideOutDown");
@@ -50,7 +48,7 @@ var notify = (function($) {
         $('.js-notify-message').html('');
         clearInterval(downloadTimer);
         elem.innerHTML = 'sorry';
-        $('.js-notify-message-last').html('please wait a little bit more, your connection seems to be unstable...');
+        $('.js-notify-message-last').html(unstableConnect);
       }
     },1000);
   }
