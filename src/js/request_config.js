@@ -10,91 +10,94 @@ notify.js
 var request = (function($) {
   'use strict';
   var currentArea;
-  var area_param;
 
-  function getCode(area) {
-    log('getCode()');
-    $.support.cors = true;
+  var getData = function(area) {
     currentArea = area;
-    if (currentArea === 'All States') {
-      area_param = 'S';
-      if ($.isEmptyObject(stateRepo.codes)) {
-        makeAjax.asyncGetCode('state_code.json');
-      } else {
-        buildURL(area_param);
-      }
-      return;
-    }
-    area_param = 'N';
-    log('get area codes');
-    if ($.isEmptyObject(neighborhoodRepo.codes)) {
-      makeAjax.asyncGetCode('neighborhood_code.json');
-    } else {
-      buildURL(area_param);
-    }
-  }
 
-  function cleanCode(codes) {
+    getCode(currentArea)
+      .then(makeAjax.asyncGetCode)
+      .then(cleanCode)
+      .then(buildURL)
+      .then(makeRequest)
+      .catch(function(error){log(error);});
+  };
+
+  var getCode = function() {
+    return new Promise(function(resolve, reject) {
+      log('getCode()');
+      $.support.cors = true;
+      if (currentArea === 'All States') {        
+        resolve('state_code.json');
+        return;
+      }
+      resolve('neighborhood_code.json');
+    });
+  };
+
+  var cleanCode = function(codes) {
     log('cleanCode()');
-    if (currentArea === 'All States') {
-      // store codes for cache
-      stateRepo.codes = codes;
-      log("this is " + stateRepo.codes);
-      log(stateRepo.codes);
-      buildURL(area_param);
-      return;
-    }
-    neighborhoodRepo.codes = codes;
-    log(neighborhoodRepo.codes);
-    // split city|code into array and assign new sub-key 'Code' to neighborhoodRepo.codes
-    for (var a in neighborhoodRepo.codes) {
-      var codeArray = neighborhoodRepo.codes[a]['City|Code'].split('|');
-      neighborhoodRepo.codes[a].Code = codeArray[1];
-    }
-    buildURL(area_param);
-  }
-
-  function buildURL(area_param) {
-    log('buildURL()');
-    // build parameters to pass into ajax calls
-    var url = [
-      'https://www.quandl.com/api/v3/datasets/ZILL/', area_param, 
-      '@areaCode_A.json?collapse=annual',
-      '&api_key=1aGVznRZH7ckoyhVtges'];
-    var urlArray = [];
-    var nameArray = [];
-
-    if (currentArea === 'All States') {
-      for (var state in stateRepo.codes) {
-        var stateUrl = url.join('').replace('@areaCode', stateRepo.codes[state]);
-        urlArray.push(stateUrl);
-        nameArray.push(state);
+    return new Promise(function(res, rej) {
+      var area_param;
+      if (currentArea === 'All States') {
+        // store codes for cache
+        stateRepo.codes = codes;
+        area_param = 'S';
+        res(area_param);
+        return;
       }
-    } else {
-      for (var n in neighborhoodRepo.codes) {
-        var abbrArea = abbrState(currentArea, 'abbr');
-        if (neighborhoodRepo.codes[n].Metro === abbrArea) {
-          var areaUrl = url.join('').replace('@areaCode', neighborhoodRepo.codes[n].Code);
-          urlArray.push(areaUrl);
-          nameArray.push(n);
+      neighborhoodRepo.codes = codes;
+      // split city|code into array and assign new sub-key 'Code' to neighborhoodRepo.codes
+      for (var a in neighborhoodRepo.codes) {
+        var codeArray = neighborhoodRepo.codes[a]['City|Code'].split('|');
+        neighborhoodRepo.codes[a].Code = codeArray[1];
+      }
+      area_param = 'N';
+      res(area_param);
+    });
+  };
+
+  var buildURL = function(area_param) {
+    log('buildURL()');
+    return new Promise(function(res, rej) {
+      var url = [
+        'https://www.quandl.com/api/v3/datasets/ZILL/', area_param, 
+        '@areaCode_A.json?collapse=annual',
+        '&api_key=1aGVznRZH7ckoyhVtges'];
+      var urlArray = [];
+      var nameArray = [];
+      if (area_param === 'S') {
+        for (var state in stateRepo.codes) {
+          var stateUrl = url.join('').replace('@areaCode', stateRepo.codes[state]);
+          urlArray.push(stateUrl);
+          nameArray.push(state);
+        }
+      } 
+      else {
+        for (var n in neighborhoodRepo.codes) {
+          var abbrArea = abbrState(currentArea, 'abbr');
+          if (neighborhoodRepo.codes[n].Metro === abbrArea) {
+            var areaUrl = url.join('').replace('@areaCode', neighborhoodRepo.codes[n].Code);
+            urlArray.push(areaUrl);
+            nameArray.push(n);
+          }
         }
       }
-    }
-    makeRequest(urlArray, nameArray);
-  }
+      var args = {"urlArray": urlArray, "nameArray": nameArray};
+      res(args);
+    });
+  };
 
-  function makeRequest(urlArray, nameArray) {
+  var makeRequest = function(args) {
     log('makeRequest()');
-    if (urlArray.length === 0) {notify.noData(currentArea); return;}
-    notify.waitTime(urlArray.length + 10);
+    if (args.urlArray.length === 0) {notify.noData(currentArea); return;}
+    notify.waitTime(args.urlArray.length + 10);
     // please see make_ajax.js to understand why i is set as -1
-    var i = -1;
-    makeAjax.sync(currentArea, urlArray, nameArray, i);
-  }
+    var i = 0;
+    makeAjax.sync(currentArea, args.urlArray, args.nameArray, i);
+  };
 
   return {
-    getCode: getCode,
-    cleanCode: cleanCode
+    getData: getData
   };
 
 })(jQuery);

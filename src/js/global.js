@@ -1,8 +1,8 @@
-// Global debug logger
+// Global variables
 
-// (function() {
-// 'use strict';
-// })();
+var CurrentTime = 1;
+
+var ChosenDataType = 'HousePrice';
 
 var debug = true;
 
@@ -12,6 +12,33 @@ var log = function(s){
   }
 };
 
+// Function check whether a type of local storage is available
+// from https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+var storageAvailable = function(type) {
+    try {
+        var storage = window[type],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            storage.length !== 0;
+    }
+};
+
+// Function to get Percentage Change
 var percentChg = function(x, y) {
   return y !== 0 ? (x-y)/(x+y)*100 : 0;
 };

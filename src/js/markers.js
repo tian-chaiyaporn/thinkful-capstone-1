@@ -5,48 +5,75 @@ global.js
 var mark = (function($){
   'use strict';
 
-  // set scope variables for caching
+  // set private scope variables for caching
   var Coordinates = [];
   var markers = [];
+  var currentArea;
+  var currentTitle;
+  var currentAddress;
+  var currentInfo;
+  var currentMarkerSize;
 
-  function buildMarkers(area, title, address, info, markerSize) {
-    if (!$.isEmptyObject(Coordinates[title])) {
-      markers
-        .find(function(marker){return marker.title === title;})
-        .infowindow
-        .setContent(info);
-      return;
-    }
-    getLatLng(address, title, function(){
-      displayMarker(area, title, info, markerSize);
-    });
-  }
+  var buildMarkers = function(area, title, address, info, markerSize) {
+    // assign current params in private scope variables
+    currentArea = area;
+    currentTitle  = title;
+    currentAddress  = address;
+    currentInfo = info;
+    currentMarkerSize  = markerSize;
 
-  function getLatLng(address, title, cb) {
-    log("getLatLng()");
-    var geocoder = new google.maps.Geocoder();
-    var latLng = [];
-    geocoder.geocode({ 'address': address }, function (results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        latLng[0] = results[0].geometry.location.lat();
-        latLng[1] = results[0].geometry.location.lng();
-        Coordinates[title] = latLng;
-        cb();
+    checkMarker()
+      .then(getLatLng)
+      .then(displayMarker)
+      .catch(function(error){log(error);});
+  };
+
+  var checkMarker = function() {
+    return new Promise(function(resolve, reject){
+      // if marker already exist, change the content of the marker
+      if (Coordinates.hasOwnProperty(currentTitle)) {
+        markers
+          .find(function(marker){return marker.title === currentTitle;})
+          .infowindow
+          .setContent(currentInfo);
+        reject("markers already exists");
+        return;
+      } else {
+        resolve();
       }
     });
-  }
+  };
 
-  function displayMarker(area, title, info, markerSize) {
+  var getLatLng = function() {
+    return new Promise(function(resolve, reject){
+      var geocoder = new google.maps.Geocoder();
+      var latLng = [];
+      geocoder.geocode({ 'address': currentAddress }, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          latLng[0] = results[0].geometry.location.lat();
+          latLng[1] = results[0].geometry.location.lng();
+          Coordinates[currentTitle] = latLng;
+          resolve(latLng);
+        } 
+        else {
+          reject("cannot find geocode");
+          return;
+        }
+      });
+    });
+  };
+
+  var displayMarker = function(latLng) {
     log("displayMarker()");
     var myinfowindow = new google.maps.InfoWindow({
-      content: info
+      content: currentInfo
     });
 
     var denominator = 100;
     var markerColor = 'red';
 
-    if (area !== 'All States'){
-      var center = new google.maps.LatLng(Coordinates[title][0], Coordinates[title][1]);
+    if (currentArea !== 'All States'){
+      var center = new google.maps.LatLng(latLng[0], latLng[1]);
       map.panTo(center);
       map.setZoom(8);
       denominator = 500;
@@ -57,17 +84,17 @@ var mark = (function($){
       path: google.maps.SymbolPath.CIRCLE,
       fillColor: markerColor,
       fillOpacity: 0.6,
-      scaledSize: new google.maps.Size(markerSize, markerSize),
-      scale: markerSize/denominator + 4,
+      scaledSize: new google.maps.Size(currentMarkerSize, currentMarkerSize),
+      scale: currentMarkerSize/denominator + 4,
       strokeColor: 'white',
       strokeWeight: 0
     };
 
     var marker = new google.maps.Marker({
-      position: {lat: Coordinates[title][0], lng: Coordinates[title][1]},
+      position: {lat: latLng[0], lng: latLng[1]},
       icon: iconMarker,
       map: map,
-      title: title,
+      title: currentTitle,
       infowindow: myinfowindow
     });
 
@@ -80,7 +107,7 @@ var mark = (function($){
       removeMarkers();
       this.infowindow.open(map, this);
     });
-  }
+  };
 
   function removeMarkers() {
     markers.map(function(marker){
@@ -88,24 +115,9 @@ var mark = (function($){
     });
   }
 
-  function moveToLocation(area) {
-    log('moveToLocation()');
-    if ($.isEmptyObject(Coordinates[area])){
-      var address = area + ' United States';
-      getLatLng(address, area, function(){
-        moveToLocation(area);
-      });
-    } else {
-      var center = new google.maps.LatLng(Coordinates[area][0], Coordinates[area][1]);
-      map.panTo(center);
-      map.setZoom(6);
-    } 
-  }
-
   return {
     buildMarkers: buildMarkers,
-    removeMarkers: removeMarkers,
-    moveToLocation: moveToLocation
+    removeMarkers: removeMarkers
   };
 
 })(jQuery);

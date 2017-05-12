@@ -21,8 +21,6 @@ gmap = (function($) {
       minZoom:            3
     },
     mapcanvas: 0,
-
-    // Coordinates for center of US
     latCenter : 37.09024,
     lonCenter : -96.712891
   };
@@ -280,10 +278,25 @@ gmap = (function($) {
     map.setZoom(4);
   }
 
+  function moveToLocation(area) {
+    log('moveToLocation()');
+    if ($.isEmptyObject(Coordinates[area])){
+      var address = area + ' United States';
+      getLatLng(address, area, function(){
+        moveToLocation(area);
+      });
+    } else {
+      var center = new google.maps.LatLng(Coordinates[area][0], Coordinates[area][1]);
+      map.panTo(center);
+      map.setZoom(6);
+    } 
+  }
+
   return {
     init: init,
     build: build,
-    zoomOut: zoomOut
+    zoomOut: zoomOut,
+    moveToLocation: moveToLocation
   };
 
 })(jQuery);

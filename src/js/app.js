@@ -9,8 +9,6 @@ notify.js
 get_state.js
 get_area.js
 */
-var CurrentTime = 1;
-var ChosenDataType = 'HousePrice';
 
 (function($) {
   'use strict';
@@ -21,23 +19,32 @@ var ChosenDataType = 'HousePrice';
       var optState = $( "#js-state option:selected" ).val();
       ChosenDataType = $( "#js-data-type option:selected" ).val();
       CurrentTime = $( "#js-year option:selected" ).val();
-      
+
       mark.removeMarkers();
       notify.waitFinished();
+
       if (optState === 'All States') {
-        stateRepo.getState();
+        gmap.zoomOut();
+        stateRepo.getState()
+          .then(stateRepo.buildInterface)
+          .catch(function(error){log(error);});
         return;
       }
-      neighborhoodRepo.getNeighborhood(optState);
+      neighborhoodRepo.getNeighborhood(optState)
+        .then(neighborhoodRepo.buildInterface)
+        .catch(function(error){log(error);});
     });
   }
-
-  // initialize map
+  
   log('app loaded');
   processRequest();
+  
+  // initialize map
   gmap.init();
+
   // initialize data from all states
-  stateRepo.getState();
-  //notify.waitTime(10);
+  stateRepo.getState()
+    .then(stateRepo.buildInterface)
+    .catch(function(error){log(error);});
 
 })(jQuery);

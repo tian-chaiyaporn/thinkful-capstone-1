@@ -20,7 +20,7 @@ var info = (function($) {
       HousePriceYr3: 2 in dat ? dat[2][1] : 0,
       HousePriceYr5: 4 in dat ? dat[4][1] : 0,
       HousePriceYr10: 9 in dat ? dat[9][1] : 0,
-      PriceChangeYr1: percentChg(dat[0][1], 1 in dat ? dat[0][1] : 0),
+      PriceChangeYr1: percentChg(dat[0][1], 1 in dat ? dat[1][1] : 0),
       PriceChangeYr3: percentChg(dat[0][1], 2 in dat ? dat[2][1] : 0),
       PriceChangeYr5: percentChg(dat[0][1], 4 in dat ? dat[4][1] : 0),
       PriceChangeYr10: percentChg(dat[0][1], 9 in dat ? dat[9][1] : 0)
@@ -29,9 +29,16 @@ var info = (function($) {
     var dataToPass;
     if (area === 'All States') {
       stateRepo.data[areaName] = dataToCompute;
+      // if (storageAvailable('localStorage')) {
+      //   var stringData = stateRepo.data
+      //   // Yippee! We can use localStorage awesomeness
+      // }
       dataToPass = stateRepo.data;
     } else {
       neighborhoodRepo.data[area][areaName] = dataToCompute;
+      // if (storageAvailable('localStorage')) {
+      //   // Yippee! We can use localStorage awesomeness
+      // }
       dataToPass = neighborhoodRepo.data;
     }
     info.buildInfo(area, dataToPass, areaName);
