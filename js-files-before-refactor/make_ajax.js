@@ -46,15 +46,16 @@ var makeAjax = (function($) {
     if (stop === 1) {
       console.log('download stopped');
       notify.waitFinished();
-      $('.js-search-btn').html('Search');
+      notify.button('Search');
       return;
     } 
     else if(i >= urlArray.length) {
       console.log('all data has loaded');
       notify.waitFinished();
+      notify.button('Search');
       stop = 1; 
-      // if (area === 'All States') {stateRepo.storeInLocal();}
-      $('.js-search-btn').html('Search');
+      if (area === 'All States') {stateRepo.storeInLocal();}
+      else {neighborhoodRepo.storeInLocal();}
       return;
     }
     else {
@@ -65,6 +66,7 @@ var makeAjax = (function($) {
             method: 'GET',
             dataType: "json",
             success: function (res) {
+              log(res);
               info.cleanData(area, res, nameArray[i]);
               i = i+1;
               sync(area, urlArray, nameArray, i);

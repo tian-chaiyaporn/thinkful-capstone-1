@@ -28,18 +28,11 @@ var info = (function($) {
 
     var dataToPass;
     if (area === 'All States') {
-      stateRepo.data[areaName] = dataToCompute;
-      // if (storageAvailable('localStorage')) {
-      //   var stringData = stateRepo.data
-      //   // Yippee! We can use localStorage awesomeness
-      // }
-      dataToPass = stateRepo.data;
+      stateRepo.addToCache(dataToCompute, [areaName]);
+      dataToPass = stateRepo.getCache();
     } else {
-      neighborhoodRepo.data[area][areaName] = dataToCompute;
-      // if (storageAvailable('localStorage')) {
-      //   // Yippee! We can use localStorage awesomeness
-      // }
-      dataToPass = neighborhoodRepo.data;
+      neighborhoodRepo.addToCache(dataToCompute, [area, areaName]);
+      dataToPass = neighborhoodRepo.getCache()[area];
     }
     info.buildInfo(area, dataToPass, areaName);
   }
@@ -55,7 +48,7 @@ var info = (function($) {
                 'Average over: @time years'];
 
     var displayDataKey = ChosenDataType + 'Yr' + CurrentTime;    
-    var dataSrc = area === 'All States' ? data : data[area];
+    var dataSrc = area === 'All States' ? data : data;
     var resultData = dataSrc[areaName][displayDataKey];
     var displayData = resultData === 0 ? 'no data' : resultData.format(2,3,',','.');
     var markerSize;
@@ -68,7 +61,6 @@ var info = (function($) {
       .replace('@dataType', ChosenDataType)
       .replace('@displayData', displayData)
       .replace('@time', CurrentTime);
-
     // pass information to build markers
     mark.buildMarkers(area, areaName, address, info, markerSize);
   }

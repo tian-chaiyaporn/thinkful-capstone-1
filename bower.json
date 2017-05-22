@@ -15,9 +15,12 @@
     "test",
     "tests"
   ],
-  "includeDev":true,
+  "includeDev": true,
   "dependencies": {
     "bootstrap-sass": "^3.3.7",
     "animate.css": "^3.5.2"
-  } 
+  },
+  "devDependencies": {
+    "page": "visionmedia/page.js#^1.7.1"
+  }
 }

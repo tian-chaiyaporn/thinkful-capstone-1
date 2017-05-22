@@ -23,6 +23,9 @@ const conf = {
     vendors: {
       output: 'vendors.css'
     },
+    vendorsJS: {
+      output: 'vendors.js'
+    },
     js: {
       src: path.join(__dirname, 'src/js/*'),
       output: 'build.js'
@@ -31,7 +34,7 @@ const conf = {
   buildDir: path.join(__dirname, 'build')
 };
 
-gulp.task('build', ['bootstrap-font', 'build:html', 'build:css', 'build:vendors', 'build:js']);
+gulp.task('build', ['build:html', 'build:css', 'build:vendors', 'build:vendorsJS', 'build:js']);
 
 gulp.task('watch', function () {
   gulp.watch([
@@ -42,8 +45,8 @@ gulp.task('watch', function () {
 });
 
 // $ npm run build:html
-gulp.task('build:html', ['build:css', 'build:vendors', 'build:js'], function () {
-  const injectFiles = gulp.src(['build/build.css', 'build/vendors.css', 'build/build.js']);
+gulp.task('build:html', ['build:css', 'build:vendors', 'build:vendorsJS', 'build:js'], function () {
+  const injectFiles = gulp.src(['build/build.css', 'build/vendors.css', 'build/vendors.js', 'build/build.js']);
 
   const injectOptions = {
     addRootSlash: false,
@@ -65,6 +68,15 @@ gulp.task('build:vendors', function() {
   gulp.src(mainBowerFiles({ debugging: true }))
     .pipe(filter('**/*.css'))
     .pipe(concat(conf.tasks.vendors.output))
+    .pipe(gulp.dest(conf.buildDir));
+});
+
+// $ npm run build:vendorsJS
+gulp.task('build:vendorsJS', function() {
+  gulp.src('bower_components/page/*')
+    .pipe(filter('/.js'))
+    .pipe(concat(conf.tasks.vendorsJS.output))
+    //.pipe(uglify())
     .pipe(gulp.dest(conf.buildDir));
 });
 
@@ -95,13 +107,6 @@ gulp.task('build:css', function () {
 // $ npm run watch:css
 gulp.task('watch:css', function () {
   gulp.watch(conf.tasks.css.src, ['build:css']);
-});
-
-// put bootstrap-font in build folders
-gulp.task('bootstrap-font', function() {
-
-  gulp.src('./node_modules/bootstrap-sass/assets/fonts/bootstrap/**/*.{ttf,woff,woff2,eof,svg}')
-  .pipe(gulp.dest('build/fonts/bootstrap/'));
 });
 
 // $ npm run build:js

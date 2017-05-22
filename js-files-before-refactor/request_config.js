@@ -59,12 +59,22 @@ var request = (function($) {
   var buildURL = function(area_param) {
     log('buildURL()');
     return new Promise(function(res, rej) {
+      // var BASE_URL = 'https://www.quandl.com/api/v3';
+      // var endpoint = '/datasets/ZILL/@area-param/@areaCode_A.json';
+
+      // var queryParams = {
+      //   'api_key' : '1aGVznRZH7ckoyhVtges',
+      //   'collapse': 'annual'
+      // };
+
       var url = [
         'https://www.quandl.com/api/v3/datasets/ZILL/', area_param, 
         '@areaCode_A.json?collapse=annual',
         '&api_key=1aGVznRZH7ckoyhVtges'];
+        
       var urlArray = [];
       var nameArray = [];
+
       if (area_param === 'S') {
         for (var state in stateRepo.codes) {
           var stateUrl = url.join('').replace('@areaCode', stateRepo.codes[state]);
@@ -89,11 +99,13 @@ var request = (function($) {
 
   var makeRequest = function(args) {
     log('makeRequest()');
-    if (args.urlArray.length === 0) {notify.noData(currentArea); return;}
+    if (!args.urlArray.length) {
+      notify.noData(currentArea);
+      return;
+    }
+
     notify.waitTime(args.urlArray.length + 10);
-    // please see make_ajax.js to understand why i is set as -1
-    var i = 0;
-    makeAjax.sync(currentArea, args.urlArray, args.nameArray, i);
+    makeAjax.sync(currentArea, args.urlArray, args.nameArray, 0);
   };
 
   return {

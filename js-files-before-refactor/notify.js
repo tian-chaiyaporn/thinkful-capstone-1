@@ -1,14 +1,6 @@
-// requires: Utils.js
-
-/**
- * @file 
- *
- * Provides Notify functionality to give users feedback when data is loading
- *
- * 
- * MVC pattern category: View
- *
- */
+/* requires:
+global.js
+*/
 
 var notify = (function($) {
   'use strict';
@@ -26,7 +18,7 @@ var notify = (function($) {
     $('.js-notify').addClass("slideInUp");
   }
 
-  function getWaitTime(n) {
+  function waitTime(n) {
     // set countdown animation
     $('.js-notify-message').html(waitString);
     timer(n);
@@ -61,6 +53,8 @@ var notify = (function($) {
     },1000);
   }
 
+  // set this function after ajax resursive loading finishes
+  // and when press close button
   function waitFinished() {
     $('.js-notify').removeClass("slideInUp");
     $('.js-notify').addClass("slideOutDown");
@@ -72,10 +66,9 @@ var notify = (function($) {
 
   return {
     noData: noData,
-    startLoad: getWaitTime,
+    waitTime: waitTime,
     waitFinished: waitFinished,
     button: button,
-    finish: waitFinished
   };
 
 })(jQuery);

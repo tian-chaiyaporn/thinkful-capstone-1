@@ -1,14 +1,7 @@
-// requires: Utils.js
-
-/**
- * @file 
- *
- * Construct Google map
- * gmap function modified from: https://gist.github.com/lekkerduidelijk/9831313
- *
- * MVC pattern category: View
- *
- */
+/* requires:
+global.js
+*/
+// gmap function modified from https://gist.github.com/lekkerduidelijk/9831313
 
 var map,
 gmap = (function($) {
@@ -285,19 +278,19 @@ gmap = (function($) {
     map.setZoom(4);
   }
 
-  // function moveToLocation(area) {
-  //   log('moveToLocation()');
-  //   var data = stateRepo.getCache()[area].latLng;
-  //   var center = new google.maps.LatLng(data[0], data[1]);
-  //   map.panTo(center);
-  //   map.setZoom(6);
-  // }
+  function moveToLocation(area) {
+    log('moveToLocation()');
+    var data = stateRepo.getCache()[area].latLng;
+    var center = new google.maps.LatLng(data[0], data[1]);
+    map.panTo(center);
+    map.setZoom(6);
+  }
 
   return {
     //init: init,
     build: build,
-    zoomOut: zoomOut
-    // moveToLocation: moveToLocation
+    zoomOut: zoomOut,
+    moveToLocation: moveToLocation
   };
 
 })(jQuery);
