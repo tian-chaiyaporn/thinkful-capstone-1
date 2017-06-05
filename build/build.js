@@ -410,13 +410,13 @@ App.AppStateManager = (function ($) {
 				.then(App.Coordinates.get.bind(null, area))
 				.then(App.AppStateStorage.set.bind(null, area))
 				.then(renderAppState)
-				.catch();
+				.then(App.AppStateStorage.storeInLocal)
+				.catch(function(error){log(error);});
       i++;
       if (i === lim) {
-      	stopApiRequestLoop();
+      	stopLoadingData();
       	App.Presenter.closeNotification();
       	App.Presenter.toggleControlView('show');
-      	App.AppStateStorage.storeInLocal();
       }
     };
     return setInterval(run, 1000);
@@ -591,9 +591,12 @@ App.AppStateStorage = (function ($) {
 	// add function: add cached data to browser's localStorage
 	function setLocalStorageData () {
 		log('addToLocalStorage()');
-    return new Promise(function(res){ 
+    return new Promise(function(res, rej){ 
       if (storageAvailable('localStorage')) {
         localStorage.setItem('HousePriceData', JSON.stringify(APP_STATE));
+        res();
+      } else {
+      	rej('localStorage do not exist in this browser');
       }
     });
 	}

@@ -3,7 +3,6 @@ const gulp = require('gulp');
 const concat = require('gulp-concat');
 const sass = require('gulp-sass');
 const inject = require('gulp-inject');
-const wiredep = require('wiredep').stream;
 
 const conf = {
   tasks: {
@@ -58,7 +57,6 @@ gulp.task('build:css', function () {
   };
 
   gulp.src(conf.tasks.css.src)
-    .pipe(wiredep())
     .pipe(inject(injectGlobalFiles, injectGlobalOptions))
     .pipe(sass({style: 'expanded'}))
     .pipe(concat(conf.tasks.css.output))

@@ -117,9 +117,12 @@ App.AppStateStorage = (function ($) {
 	// add function: add cached data to browser's localStorage
 	function setLocalStorageData () {
 		log('addToLocalStorage()');
-    return new Promise(function(res){ 
+    return new Promise(function(res, rej){ 
       if (storageAvailable('localStorage')) {
         localStorage.setItem('HousePriceData', JSON.stringify(APP_STATE));
+        res();
+      } else {
+      	rej('localStorage do not exist in this browser');
       }
     });
 	}

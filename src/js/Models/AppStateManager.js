@@ -53,13 +53,13 @@ App.AppStateManager = (function ($) {
 				.then(App.Coordinates.get.bind(null, area))
 				.then(App.AppStateStorage.set.bind(null, area))
 				.then(renderAppState)
-				.catch();
+				.then(App.AppStateStorage.storeInLocal)
+				.catch(function(error){log(error);});
       i++;
       if (i === lim) {
-      	stopApiRequestLoop();
+      	stopLoadingData();
       	App.Presenter.closeNotification();
       	App.Presenter.toggleControlView('show');
-      	App.AppStateStorage.storeInLocal();
       }
     };
     return setInterval(run, 1000);
