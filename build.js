@@ -1,11 +1,1284 @@
-var log=function(a){console.log(a)},storageAvailable=function(a){var e;try{e=window[a];var n="__storage_test__";return e.setItem(n,n),e.removeItem(n),!0}catch(a){return a instanceof DOMException&&(22===a.code||1014===a.code||"QuotaExceededError"===a.name||"NS_ERROR_DOM_QUOTA_REACHED"===a.name)&&0!==e.length}},percentChg=function(a,e){return 0!==e?(a-e)/(a+e)*100:0};Number.prototype.format=function(a,e,n,i){var r="\\d(?=(\\d{"+(e||3)+"})+"+(a>0?"\\D":"$")+")",o=this.toFixed(Math.max(0,~~a));return(i?o.replace(".",i):o).replace(new RegExp(r,"g"),"$&"+(n||","))};var abbrState=function(a,e){var n=[["Arizona","AZ"],["Alabama","AL"],["Alaska","AK"],["Arizona","AZ"],["Arkansas","AR"],["California","CA"],["Colorado","CO"],["Connecticut","CT"],["Delaware","DE"],["Florida","FL"],["Georgia","GA"],["Hawaii","HI"],["Idaho","ID"],["Illinois","IL"],["Indiana","IN"],["Iowa","IA"],["Kansas","KS"],["Kentucky","KY"],["Kentucky","KY"],["Louisiana","LA"],["Maine","ME"],["Maryland","MD"],["Massachusetts","MA"],["Michigan","MI"],["Minnesota","MN"],["Mississippi","MS"],["Missouri","MO"],["Montana","MT"],["Nebraska","NE"],["Nevada","NV"],["New Hampshire","NH"],["New Jersey","NJ"],["New Mexico","NM"],["New York","NY"],["North Carolina","NC"],["North Dakota","ND"],["Ohio","OH"],["Oklahoma","OK"],["Oregon","OR"],["Pennsylvania","PA"],["Rhode Island","RI"],["South Carolina","SC"],["South Dakota","SD"],["Tennessee","TN"],["Texas","TX"],["Utah","UT"],["Vermont","VT"],["Virginia","VA"],["Washington","WA"],["West Virginia","WV"],["Wisconsin","WI"],["Wyoming","WY"]];if("abbr"==e){for(a=a.replace(/\w\S*/g,function(a){return a.charAt(0).toUpperCase()+a.substr(1).toLowerCase()}),i=0;i<n.length;i++)if(n[i][0]==a)return n[i][1]}else if("name"==e)for(a=a.toUpperCase(),i=0;i<n.length;i++)if(n[i][1]==a)return n[i][0]};
-var map,gmap=function(e){"use strict";function t(){o.mapcanvas=e(".js-gmap");var t=e.extend({},o.mapDefaults,{zoom:o.zoom,center:new google.maps.LatLng(o.latCenter,o.lonCenter),zoomControlOptions:{position:google.maps.ControlPosition.LEFT_CENTER},maxZoom:o.maxZoom,minZoom:o.minZoom,styles:[{elementType:"geometry",stylers:[{color:"#212121"}]},{elementType:"labels.icon",stylers:[{visibility:"off"}]},{elementType:"labels.text.fill",stylers:[{color:"#757575"}]},{elementType:"labels.text.stroke",stylers:[{color:"#212121"}]},{featureType:"administrative",elementType:"geometry",stylers:[{color:"#757575"}]},{featureType:"administrative.country",elementType:"labels.text.fill",stylers:[{color:"#9e9e9e"}]},{featureType:"administrative.land_parcel",stylers:[{visibility:"off"}]},{featureType:"administrative.locality",elementType:"labels.text.fill",stylers:[{color:"#bdbdbd"}]},{featureType:"poi",elementType:"labels.text.fill",stylers:[{color:"#757575"}]},{featureType:"poi.business",stylers:[{visibility:"off"}]},{featureType:"poi.park",elementType:"geometry",stylers:[{color:"#181818"}]},{featureType:"poi.park",elementType:"labels.text",stylers:[{visibility:"off"}]},{featureType:"poi.park",elementType:"labels.text.fill",stylers:[{color:"#616161"}]},{featureType:"poi.park",elementType:"labels.text.stroke",stylers:[{color:"#1b1b1b"}]},{featureType:"road",stylers:[{visibility:"off"}]},{featureType:"road",elementType:"geometry.fill",stylers:[{color:"#2c2c2c"}]},{featureType:"road",elementType:"labels.text.fill",stylers:[{color:"#8a8a8a"}]},{featureType:"road.arterial",elementType:"geometry",stylers:[{color:"#373737"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#3c3c3c"}]},{featureType:"road.highway.controlled_access",elementType:"geometry",stylers:[{color:"#4e4e4e"}]},{featureType:"road.local",elementType:"labels.text.fill",stylers:[{color:"#616161"}]},{featureType:"transit",elementType:"labels.text.fill",stylers:[{color:"#757575"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#000000"}]},{featureType:"water",elementType:"labels.text.fill",stylers:[{color:"#3d3d3d"}]}]});map=new google.maps.Map(o.mapcanvas[0],t)}function l(){var e=new google.maps.LatLng(37.09024,-96.712891);map.panTo(e),map.setZoom(4)}var o={mapDefaults:{panControl:!1,zoomControl:!0,zoomControlOptions:!0,scaleControl:!1,mapTypeControl:!1,streetViewControl:!1,scrollwheel:!1,zoom:4,maxZoom:16,minZoom:3},mapcanvas:0,latCenter:37.09024,lonCenter:-96.712891};return{build:t,zoomOut:l}}(jQuery);
-var router=function(e,t){"use strict";return{init:function(){t("/:dataType/:timeRange/:state",App.executeInput),e(".js-search-location").submit(function(a){a.preventDefault();var r=e("#js-state option:selected").val(),i=e("#js-data-type option:selected").val(),n=e("#js-year option:selected").val();Marker.clearMarkers(),notify.waitFinished(),t.redirect("/"+i+"/"+n+"/"+r)})}}}(jQuery,page);
-var clean=function(e){"use strict";return{formatForStorage:function(e){return new Promise(function(r){log("format data from api to store in cache");var n=e.dataset.data;r({HousePrice:{"1year":{avgPrice:0 in n?n[0][1]:0,percentChange:percentChg(n[0][1],1 in n?n[1][1]:0)},"3year":{avgPrice:2 in n?n[2][1]:0,percentChange:percentChg(n[0][1],2 in n?n[2][1]:0)},"5year":{avgPrice:4 in n?n[4][1]:0,percentChange:percentChg(n[0][1],4 in n?n[4][1]:0)},"10year":{avgPrice:9 in n?n[9][1]:0,percentChange:percentChg(n[0][1],9 in n?n[9][1]:0)}}})})}}}(jQuery);
-var api=function(n){"use strict";return{request:function(a,e){return log("request()"),new Promise(function(o,r){var t=e+a+"_A.json",s={api_key:"1aGVznRZH7ckoyhVtges",collapse:"annual"},u="?";for(var i in s)u=u+i+"="+s[i]+"&";u=u.substring(0,u.length-1);var c="https://www.quandl.com/api/v3/datasets/ZILL/"+t+u;log(c),n.ajax({url:c,dataType:"json",success:function(n){o(n)},error:function(){r(log("load data failed for: "+c+" ignore and move on."))}})})}}}(jQuery);
-var HousePriceModel=function(o){"use strict";var e={},t=function(){return log("getCache()"),e},a=function(o,t){return log("addToCache()"),new Promise(function(a){switch(t.length){case 1:e[t[0]]=o;break;case 2:e[t[0]][t[1]]=o;break;case 3:e[t[0]][t[1]][t[2]]=o;break;case 4:e[t[0]][t[1]][t[2]][t[3]]=o;break;case 5:e[t[0]][t[1]][t[2]][t[3]][t[4]]=o}a()})},n=function(){return log("addToLocalStorage()"),new Promise(function(o){storageAvailable("localStorage")&&localStorage.setItem("HousePriceData",JSON.stringify(e))})};return{getExistingData:function(t){log("getExistingData()");var a=!1;o.isEmptyObject(e)||(a="All States"===t||"neighborhoods"in e[t]);var n,r=!1;return localStorage.getItem("HousePriceData")&&(n=JSON.parse(localStorage.getItem("HousePriceData")),r="All States"===t||n[t].neighborhoods),new Promise(function(o,c){if(a)return log("data already exists"),void o(e);if(r){log("get from local storage");localStorage.getItem("HousePriceData");return e="All States"===t?n:n[t].neighbothoods,void o(e)}log("no existing data, goes on to get from Quandl API request"),o()})},getCache:t,getData:function(t,n,r){return log("getQuandlData()"),new Promise(function(c,i){var l="All States"===r?"S":"N";api.request(t,l).then(clean.formatForStorage).then(function(t){function l(){e[r].hasOwnProperty("neighborhoods")?a(t,[r,"neighborhoods",n]).catch(function(){console.log("fail to add area data to cache")}):a({},[r,"neighborhoods"]).then(a.bind(null,t,[r,"neighborhoods",n])).catch(function(){console.log("fail to add area data to cache")})}log(t),o.isEmptyObject(t)?i(console.log("no data from Quandl")):function(){"All States"!==r?l():a(t,[n]).catch(function(){console.log("fail to add formatted data to cache")}),c(t)}()}).catch()})},addToCache:a,storeInLocal:n}}(jQuery);
-var AreaCodeModel=function(t){"use strict";var e,o=[],n=[],r=function(){return log("getAllStates()"),a().then(i).then(u).catch(function(t){log(t)})},a=function(){return log("getCode()"),new Promise(function(o,n){if(t.support.cors=!0,"All States"===e)return void o("state_code.json");o("/build/neighborhood_code.json")})},i=function(e){return log("asyncRequest()"),new Promise(function(o,n){t.ajax({url:e,method:"GET",dataType:"json",success:function(t){o(t)},error:function(){n("fail to get code")}})})},u=function(t){return log("formatCode()"),new Promise(function(r,a){if("All States"===e)return o=t,void r({codes:o,stateName:e});n=t,n.map(function(t){var e=t["City|Code"].split("|");t.city=e[0],t.code=e[1]}),log(n);var i=abbrState(e,"abbr"),u=n.filter(function(t){return t.metro===i});log(u),r({codes:u,stateName:e})})};return{getCodeByName:function(t){return log("getByName()"),new Promise(function(a,i){if(e=t,"All States"===e?o.length>0:n.length>0){var u=abbrState(e,"abbr");a({codes:"All States"===e?o:n.filter(function(t){return t.Metro===u}),stateName:e})}else a(r(t))})}}}(jQuery);
-var Marker=function(e){"use strict";function a(){t.map(function(e){e.infowindow.close()})}function o(){t.map(function(e){e.setVisible(!1)})}var t=[],n=function(e){i(e).then(r).then(s).catch(function(e){log(e)})},i=function(a){var o={};return o=HousePriceModel.getCache(),log(o),"All States"===a.area?e.isEmptyObject(o)||(o=o[a.areaName]):!e.isEmptyObject(o)&&o.hasOwnProperty(a.area)&&(o=o[a.area],o=o.hasOwnProperty("neighborhoods")?o.neighborhoods[a.areaName]:{}),new Promise(function(n,i){var r={};return r=t.find(function(e){return e.title===a.areaName}),e.isEmptyObject(r)?o.hasOwnProperty("latLng")?(s({latLng:o.latLng,argsObject:a}),void i("coordinates already exist")):void n(a):(r.infowindow.setContent(a.info),r.icon.scale=a.markerSize/100,r.setAnimation(google.maps.Animation.BOUNCE),setTimeout(function(){r.setAnimation(null)},400),r.setVisible(!0),void i("markers already exists"))})},r=function(e){var a="All States"===e.area?"":e.area,o=e.areaName+" "+a+" United States";return log(o),new Promise(function(a,t){var n=new google.maps.Geocoder,i=[];n.geocode({address:o},function(o,n){if(n!=google.maps.GeocoderStatus.OK)return void t("cannot find geocode");i[0]=o[0].geometry.location.lat(),i[1]=o[0].geometry.location.lng(),"All States"===e.area?HousePriceModel.addToCache(i,[e.areaName,"latLng"]):HousePriceModel.addToCache(i,[e.area,"neighborhoods",e.areaName,"latLng"]),a({latLng:i,argsObject:e})})})},s=function(e){log("displayMarker()");var o=new google.maps.InfoWindow({content:e.argsObject.info}),n=100,i="red";if("All States"!==e.argsObject.area){var r=new google.maps.LatLng(e.latLng[0],e.latLng[1]);map.panTo(r),map.setZoom(8),n=400,i="yellow",i=e.argsObject.markerSize>0?"yellow":"lightblue"}var s={path:google.maps.SymbolPath.CIRCLE,fillColor:i,fillOpacity:.6,scaledSize:new google.maps.Size(e.argsObject.markerSize,e.argsObject.markerSize),scale:e.argsObject.markerSize/n+4,strokeWeight:0},l=new google.maps.Marker({position:{lat:e.latLng[0],lng:e.latLng[1]},icon:s,map:map,title:e.argsObject.areaName,infowindow:o});l.setAnimation(google.maps.Animation.BOUNCE),setTimeout(function(){l.setAnimation(null)},400),t.push(l),google.maps.event.addListener(l,"click",function(){a(),this.infowindow.open(map,this)})};return{buildMarkers:n,removeInfowindows:a,clearMarkers:o}}(jQuery);
-var notify=function(t){"use strict";function e(e){t(".js-notify-message").html(r.replace("@state",e)),t(".js-notify-timer").html(""),t(".js-notify-message-last").html(""),t(".js-notify").removeClass("slideOutDown"),t(".js-notify").addClass("slideInUp")}function s(e){t(".js-notify-message").html(o),n(e),t(".js-notify-message-last").html(l),t(".js-notify").removeClass("slideOutDown"),t(".js-notify").addClass("slideInUp")}function n(e){var s=e,n=document.getElementById("countdowntimer"),i=setInterval(function(){s--,n.classList.add("flipInX"),n.innerHTML=s,setTimeout(function(){n.classList.remove("flipInX")},980),t(".js-search-location").submit(function(t){t.preventDefault(),clearInterval(i)}),s<=0&&(t(".js-notify-message").html(""),clearInterval(i),n.innerHTML="sorry",t(".js-notify-message-last").html(f))},1e3)}function i(){t(".js-notify").removeClass("slideInUp"),t(".js-notify").addClass("slideOutDown")}function a(e){t(".js-search-btn").html(e)}var o="Because this is a free service there is an API limitation. Please wait for ",l="seconds for data to load",r="sorry, there doesn't seem to be data for @state",f="please wait a little bit more, your connection seems to be unstable...";return{noData:e,startLoad:s,waitFinished:i,button:a,finish:i}}(jQuery);
-var App=function(e){"use strict";var t=function(){gmap.build(),router.init(),n({params:{dataType:"HousePrice",timeRange:1,state:"All States"}})},n=function(t){function n(t){log("HousePriceModel.getExistingData()");var n=!1;return e.isEmptyObject(t)||(n="All States"===c||"neighborhoods"in t[c]),new Promise(function(e){n?(o(t),e()):(a(t),e())})}function o(e){return new Promise(function(t){var n="All States"===c?e:e[c].neighborhoods;for(var o in n)log("info and marker created from cache"),infowindow.formatInfo(o,c,r,s,n[o]).then(Marker.buildMarkers);t()})}function a(e){return new Promise(function(e){log("else AreaCodeModel.getCodeByName()"),AreaCodeModel.getCodeByName(c).then(i).then(HousePriceModel.storeInLocal).catch(),e()})}function i(e){notify.startLoad(e.codes.length);!function t(n,o){setTimeout(function(){HousePriceModel.getData(e.codes[o].code,e.codes[o].name,e.stateName).then(infowindow.formatInfo.bind(null,e.codes[o].name,e.stateName,r,s)).then(Marker.buildMarkers).then(HousePriceModel.storeInLocal).catch(),o++,o<n?t(n,o):notify.finish()},1e3)}(10,0)}var r=t.params.dataType,s=t.params.timeRange,c=t.params.state;HousePriceModel.getExistingData(c).then(n).then(notify.finish).catch()};return{init:t,executeInput:n}}(jQuery);App.init();
-var infowindow=function(e){"use strict";function a(e,a,r,o,n){return log("formatInfo()"),new Promise(function(t,i){var c,f=["Place: @place <br>","@dataType: @displayData <br>","Average over: @time years"],l=o+"year",p=n.HousePrice[l];log(p);var m;"HousePrice"===r&&(m=p.avgPrice,c=m/100,m=0===m?"no data":m.format(2,3,",","."),m="$"+m),"PriceChange"===r&&(m=p.percentChange,c=o>4?400*m:1100*m,m=0===m?"no data":m.format(2,3,",","."),m+="%"),f=f.join("").replace("@place",e).replace("@dataType",r).replace("@displayData",m).replace("@time",o),t({info:f,area:a,areaName:e,markerSize:c})})}return{formatInfo:a}}(jQuery);
+/**
+ * @file 
+ *
+ * Provides Global Constants
+ * 
+ * MVP pattern category: global constants
+ *
+ */
+
+// default USA latitude and longitude
+var LAT_LNG_USA = [37.09024, -96.712891];
+
+// settings for google maps api
+var MAP_SETTINGS = {
+    mapDefaults: {
+      panControl:         false,
+      zoomControl:        true,
+      zoomControlOptions: true,
+      scaleControl:       false,
+      mapTypeControl:     false,
+      streetViewControl:  false,
+      scrollwheel:        false,
+      zoom:               4,
+      maxZoom:            16,
+      minZoom:            3
+    },
+    mapcanvas: 0,
+    latCenter : LAT_LNG_USA[0],
+    lonCenter : LAT_LNG_USA[1]
+  };
+
+// a list of USA States mapped to their respective abbreviated versions.
+var USA_STATES_ABBR = [
+        ['Arizona', 'AZ'],
+        ['Alabama', 'AL'],
+        ['Alaska', 'AK'],
+        ['Arizona', 'AZ'],
+        ['Arkansas', 'AR'],
+        ['California', 'CA'],
+        ['Colorado', 'CO'],
+        ['Connecticut', 'CT'],
+        ['Delaware', 'DE'],
+        ['Florida', 'FL'],
+        ['Georgia', 'GA'],
+        ['Hawaii', 'HI'],
+        ['Idaho', 'ID'],
+        ['Illinois', 'IL'],
+        ['Indiana', 'IN'],
+        ['Iowa', 'IA'],
+        ['Kansas', 'KS'],
+        ['Kentucky', 'KY'],
+        ['Kentucky', 'KY'],
+        ['Louisiana', 'LA'],
+        ['Maine', 'ME'],
+        ['Maryland', 'MD'],
+        ['Massachusetts', 'MA'],
+        ['Michigan', 'MI'],
+        ['Minnesota', 'MN'],
+        ['Mississippi', 'MS'],
+        ['Missouri', 'MO'],
+        ['Montana', 'MT'],
+        ['Nebraska', 'NE'],
+        ['Nevada', 'NV'],
+        ['New Hampshire', 'NH'],
+        ['New Jersey', 'NJ'],
+        ['New Mexico', 'NM'],
+        ['New York', 'NY'],
+        ['North Carolina', 'NC'],
+        ['North Dakota', 'ND'],
+        ['Ohio', 'OH'],
+        ['Oklahoma', 'OK'],
+        ['Oregon', 'OR'],
+        ['Pennsylvania', 'PA'],
+        ['Rhode Island', 'RI'],
+        ['South Carolina', 'SC'],
+        ['South Dakota', 'SD'],
+        ['Tennessee', 'TN'],
+        ['Texas', 'TX'],
+        ['Utah', 'UT'],
+        ['Vermont', 'VT'],
+        ['Virginia', 'VA'],
+        ['Washington', 'WA'],
+        ['West Virginia', 'WV'],
+        ['Wisconsin', 'WI'],
+        ['Wyoming', 'WY'],
+    ];
+
+// style setting for google maps api
+var MAP_STYLE = [
+        {
+          "elementType": "geometry",
+          "stylers": [{"color": "#212121"}]
+        },
+        {
+          "elementType": "labels.icon",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#757575"}]
+        },
+        {
+          "elementType": "labels.text.stroke",
+          "stylers": [{"color": "#212121"}]
+        },
+        {
+          "featureType": "administrative",
+          "elementType": "geometry",
+          "stylers": [{"color": "#757575"}]
+        },
+        {
+          "featureType": "administrative.country",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#9e9e9e"}]
+        },
+        {
+          "featureType": "administrative.land_parcel",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "administrative.locality",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#bdbdbd"}]
+        },
+        {
+          "featureType": "poi",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#757575"}]
+        },
+        {
+          "featureType": "poi.business",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "poi.park",
+          "elementType": "geometry",
+          "stylers": [{"color": "#181818"}]
+        },
+        {
+          "featureType": "poi.park",
+          "elementType": "labels.text",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "poi.park",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#616161"}]
+        },
+        {
+          "featureType": "poi.park",
+          "elementType": "labels.text.stroke",
+          "stylers": [{"color": "#1b1b1b"}]
+        },
+        {
+          "featureType": "road",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "road",
+          "elementType": "geometry.fill",
+          "stylers": [{"color": "#2c2c2c"}]
+        },
+        {
+          "featureType": "road",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#8a8a8a"}]
+        },
+        {
+          "featureType": "road.arterial",
+          "elementType": "geometry",
+          "stylers": [{"color": "#373737"}]
+        },
+        {
+          "featureType": "road.highway",
+          "elementType": "geometry",
+          "stylers": [{"color": "#3c3c3c"}]
+        },
+        {
+          "featureType": "road.highway.controlled_access",
+          "elementType": "geometry",
+          "stylers": [{"color": "#4e4e4e"}]
+        },
+        {
+          "featureType": "road.local",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#616161"}]
+        },
+        {
+          "featureType": "transit",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#757575"}]
+        },
+        {
+          "featureType": "water",
+          "elementType": "geometry",
+          "stylers": [{"color": "#000000"}]
+        },
+        {
+          "featureType": "water",
+          "elementType": "labels.text.fill",
+          "stylers": [{"color": "#3d3d3d"}]
+        }
+      ];
+
+var MOCK_APP_STATE_OBJ = {
+    'usa-states': [
+      {id: 'S00001', title: 'California', latLng: [99.999, 99.9998]}
+    ],
+    'neighborhoods': [
+      {id: 'N00001', stateId: 'S00001', title: 'Paradise', latLng: [99.999, 99.9998]}
+    ],
+    'house-prices': [
+      {
+        stateId: 'S00001',
+        value: {
+          year1: {avg: 123456.78, percent: 5}, 
+          year3: {avg: 123456.78, percent: 5}, 
+          year5: {avg: 123456.78, percent: 5}, 
+          year10: {avg: 123456.78, percent: 5}
+        }
+      },
+      {
+        neighborhoodId: 'N00001', 
+        value: {
+          year1: {avg: 123456.78, percent: 5}, 
+          year3: {avg: 123456.78, percent: 5}, 
+          year5: {avg: 123456.78, percent: 5}, 
+          year10: {avg: 123456.78, percent: 5}
+        }
+      }
+    ]
+  };
+
+/**
+ * @file 
+ *
+ * Provides Global Utility functions
+ * 
+ * MVP pattern category: helper functions
+ *
+ */
+
+/**
+ * @global
+ *
+ * log(s)
+ * This Function check whether a type of local storage is available
+ * 
+ * @param s: input log
+ */
+var log = function(s){
+  console.log(s);
+};
+
+/**
+ * @global
+ *
+ * this function is taken from: 
+ * https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+ *
+ * storageAvailable(type)
+ * This Function check whether a type of local storage is available
+ * 
+ * @param string type: input type of local storage in browser
+ */
+var storageAvailable = function(type) {
+  var storage;
+  try {
+    storage = window[type];
+    var x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  }
+  catch(e) {
+    return e instanceof DOMException && (
+      // everything except Firefox
+      e.code === 22 ||
+      // Firefox
+      e.code === 1014 ||
+      // test name field too, because code might not be present
+      // everything except Firefox
+      e.name === 'QuotaExceededError' ||
+      // Firefox
+      e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+      // acknowledge QuotaExceededError only if there's something already stored
+      storage.length !== 0;
+    }
+};
+
+/**
+ * @global
+ *
+ * percentChg(x, y)
+ * This Function returns Percentage Change, if the input is 0, returns 0
+ * 
+ * @param integer x: input of current number
+ * @param integer y: input of previous number
+ */
+var percentChg = function(x, y) {
+  return y !== 0 ? (x-y)/(x+y)*100 : 0;
+};
+
+/**
+ * @global
+ *
+ * this function is taken from: 
+ * http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+ * written by VisioN
+ *
+ * Number.prototype.format(n, x, s, c)
+ * This Function format number string with Commas and Decimals
+ * 
+ * @param integer n: length of decimal
+ * @param integer x: length of whole part
+ * @param mixed   s: sections delimiter
+ * @param mixed   c: decimal delimiter
+ */
+Number.prototype.format = function(n, x, s, c) {
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~n));
+
+    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+
+/**
+ * @global
+ *
+ * this function is taken from: https://gist.github.com/CalebGrove/c285a9510948b633aa47
+ * for transforming state name to its abbreviation and vice versa
+ *
+ * abbrState(input, to)
+ * This Function turn input state into its corresponding abbreviated name
+ * 
+ * @param string input: input of state name or state abbreviation
+ * @param string to: input of the returned type (abbr or name)
+ */
+var abbrState = function(input, to){
+    var states = USA_STATES_ABBR;
+
+    if (to == 'abbr'){
+        input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        for(i = 0; i < states.length; i++){
+            if(states[i][0] == input){
+                return(states[i][1]);
+            }
+        }    
+    } else if (to == 'name'){
+        input = input.toUpperCase();
+        for(i = 0; i < states.length; i++){
+            if(states[i][1] == input){
+                return(states[i][0]);
+            }
+        }    
+    }
+};
+
+var App = App || {};
+
+App.AppStateManager = (function ($) {
+	'use strict';
+
+	var apiLoop;
+
+	function getDataFromStorage (area) {
+		console.log('getAppState()');
+		// get data from cache
+		App.AppStateStorage.get(area)
+			.then(function(existingData) {
+				if (!$.isEmptyObject(existingData)) {
+					App.AreaCodeLoader.getCodesFromJSON(area)
+						.then(function(totalDataAvailable) {
+							// if dataset has not loaded completely
+							if (existingData.length < totalDataAvailable.length) {
+								//ask if user wants to continue loading
+								App.Presenter.createNotification(area, totalDataAvailable.length, existingData);
+								App.Presenter.toggleControlView('hide');
+							}
+							// else just render current data, if all data is in cache
+							else {
+								App.Presenter.closeNotification();
+								renderExistingData(existingData).catch();
+							}
+						}).catch();
+				}
+				// otherwise, start loading data from the beginning
+				else {
+					App.AreaCodeLoader.getCodesFromJSON(area)
+		          .then(getAndRenderDataFromAPI.bind(null, area, null))
+		          .catch();
+				}
+			});
+	}
+
+	// create settings to notify user of how long to wait, and start loading data
+	function getAndRenderDataFromAPI (area, existingDataLength, codeArray) {
+		log('getAndRenderDataFromAPI');
+		var timer = existingDataLength ? (codeArray.length - existingDataLength) : codeArray.length;
+		App.Presenter.createNotification(area, timer);
+		App.Presenter.toggleControlView('hide');
+		var startingPoint = existingDataLength ? existingDataLength : 0;
+		apiLoop = startLoadingData(codeArray.length, startingPoint, codeArray, area);
+	}
+
+	// synchronously load and render data as each datapoint gets returned
+	function startLoadingData (lim, i, response, area) {
+    var run = function() {
+      App.Quandl.getDataByCode(response[i].code)
+				.then(App.DataCleaner.formatQuandlData.bind(null, response[i]))
+				.then(App.Coordinates.get.bind(null, area))
+				.then(App.AppStateStorage.set.bind(null, area))
+				.then(renderAppState)
+				.catch();
+      i++;
+      if (i === lim) {
+      	stopApiRequestLoop();
+      	App.Presenter.closeNotification();
+      	App.Presenter.toggleControlView('show');
+      	App.AppStateStorage.storeInLocal();
+      }
+    };
+    return setInterval(run, 1000);
+  }
+
+  function stopLoadingData () {
+		clearInterval(apiLoop);
+		App.AppStateStorage.storeInLocal();
+	}
+
+	function resumeLoadingData (area) {
+		App.AppStateStorage.get(area)
+			.then(renderExistingData)
+			.then(function(currentDataLength) {
+				App.AreaCodeLoader.getCodesFromJSON(area)
+		      .then(getAndRenderDataFromAPI.bind(null, area, currentDataLength))
+		      .catch();
+			});
+	}
+
+	function continueWithoutLoadingData (area) {
+		App.AppStateStorage.get(area)
+			.then(renderExistingData)
+			.catch();
+	}
+
+	function renderExistingData (data) {
+		data.forEach(function(datum) {
+			renderAppState(datum);
+		});
+		return	Promise.resolve(data.length);
+	}
+  
+	// pass-through function to Presenter (for access control to Presenter)
+	function renderAppState (args) {
+		App.Presenter.render(args);
+		return Promise.resolve();
+	}
+
+	// pass-through function to AppStateStorage (for access control to AppStateStorage)
+	function getCoordinateByName (name) {
+		var latLng = App.AppStateStorage.getLatLngByName(name);
+		return Promise.resolve(latLng);
+	}
+
+	return {
+		get: getDataFromStorage,
+		getCoordinateByName: getCoordinateByName,
+		stopLoadingData: stopLoadingData,
+		resumeLoadingData: resumeLoadingData,
+		continueWithoutLoadingData: continueWithoutLoadingData,
+	};
+
+})(jQuery);
+
+var App = App || {};
+
+App.AppStateStorage = (function ($) {
+	'use strict';
+
+	var APP_STATE = {
+		'usa-states': [],
+		'neighborhoods': [],
+		'house-prices': []
+	};
+
+	function getAppState (area) {
+		return new Promise(function(res, rej) {
+			// if there is no data, check localStorage. If nothing, returns null
+			if (APP_STATE['house-prices'].length === 0) {
+				getLocalStorageData()
+					.then(function(localData) {
+						if (localData) {
+							APP_STATE = localData;
+							App.AppStateManager.get(area);
+						} else {
+							res(null);
+						}
+					});
+			}
+			// if usa-states data exists in cache, return usa state data from cache
+			else if (APP_STATE['usa-states'].length > 0 && area === 'All States') {
+				log('data is not empty');
+				getCachedUsaStateData()
+					.then(function(data) {res(data);})
+					.catch(function(){log('failed to load cache data for usa states');});
+				return;
+			} 
+			else { 
+				var metaData = getUsaStateMetaDataByName(area);
+				// if corresponding stateID exist in neighborhoods, return neighborhood data from cache
+				if (APP_STATE.neighborhoods.find(function(e){return e.stateId === metaData.id;})) {
+					log('neighborhood data is not empty');
+					getCachedNeighborhoodData(area, metaData.id)
+						.then(function(data) {res(data);})
+						.catch(function(){log('failed to load cache data for neighborhoods');});
+					return;
+				}
+				// if no data exists prior to function call, return null
+				res(null);
+			}
+		});
+	}
+
+	// query function: get usa-state data from cache
+	function getCachedUsaStateData () {
+		log('getCachedUsaStateData from cache');
+		return new Promise (function(res, rej) {
+			var data = APP_STATE['house-prices']
+				// filter data based on stateID and return relevant data objects
+				.filter(function(priceData) {return priceData.hasOwnProperty('stateId') === true;})
+				// add corresponding titles and latLngs to data objects 
+				.map(function(priceData) {
+					var metaData = getUsaStateMetaDataById(priceData.stateId);
+					priceData.title = metaData.title;
+					priceData.latLng = metaData.latLng;
+					return priceData;
+				});
+			res(data);
+		});
+	}
+
+	// query function: get neighborhoods data from cache
+	function getCachedNeighborhoodData (area, stateId) {
+		log('getCachedNeighborhoodData from cache');
+		return new Promise (function(res, rej) {			
+			var data = APP_STATE.neighborhoods
+				.filter(function(neighborhood) {
+					return neighborhood.stateId === stateId;
+				})
+				.map(function(neighborhood){
+					var priceData = APP_STATE['house-prices']
+						.find(function(hPrice){return hPrice.neighborhoodId === neighborhood.id;});
+					priceData.title = neighborhood.title;
+					priceData.latLng = neighborhood.latLng;
+					return priceData;
+				});
+			res(data);
+		});
+	}
+
+	// query function: get use-state metadata from cache by name
+	function getUsaStateMetaDataByName (name) {
+		return APP_STATE['usa-states'].find(function(usaState) {return usaState.title === name;});
+	}
+
+	// query function: get use-state metadata from cache by id
+	function getUsaStateMetaDataById (id) {
+		return APP_STATE['usa-states'].find(function(usaState) {return usaState.id === id;});
+	}
+
+	// add function: atomically add data to APP_STATE as cache
+	// args: title, idType, code, housePrice
+	function setAppState (area, args) {
+		switch (args.idType) {
+			case 'stateId':
+				APP_STATE['usa-states'].push(args.code);
+				break;
+			case 'neighborhoodId':
+				var metaData =	getUsaStateMetaDataByName(area);
+				args.code.stateId = metaData.id;
+				APP_STATE.neighborhoods.push(args.code);
+				break;
+		}
+		APP_STATE['house-prices'].push(args.housePrice);
+		// format data point to pass to AppStateManager for rendering
+		args.housePrice.title = args.title;
+		args.housePrice.latLng = args.code.latLng;
+		return Promise.resolve(args.housePrice);
+	}
+
+	// add function: add cached data to browser's localStorage
+	function setLocalStorageData () {
+		log('addToLocalStorage()');
+    return new Promise(function(res){ 
+      if (storageAvailable('localStorage')) {
+        localStorage.setItem('HousePriceData', JSON.stringify(APP_STATE));
+      }
+    });
+	}
+
+	// query function: get data from browser's localStorage
+	function getLocalStorageData () {
+		log('getLocalStorage()');
+		return new Promise(function(res) {
+			var data = JSON.parse(localStorage.getItem('HousePriceData'));
+			res(data);
+		}); 
+	}
+
+	// query function: get latitude and longitude from cached data by name
+	function getLatLngByName (name) {
+		var UsaStateData = APP_STATE['usa-states'].find(function(state){return state.title === name;});
+		if (!UsaStateData) {
+			var errorMessage = 'please download the complete "All States" data first (it only takes 50 seconds)';
+			App.Presenter.createNotification(0, 0, 0, errorMessage);
+			throw new Error('please download "All States" data first');
+		}
+		return Promise.resolve(UsaStateData.latLng);
+	}
+
+	return {
+		get: getAppState,
+		set: setAppState,
+		getLatLngByName: getLatLngByName,
+		storeInLocal: setLocalStorageData
+	};
+
+})(jQuery);
+
+var App = App || {};
+
+App.AreaCodeLoader = (function ($) {
+	'use strict';
+
+	function getCodesFromJSON (area) {
+		console.log('getCodeFromJSON()');
+		// logic to choose whether the user requests for all states or single state
+    return new Promise(function(res, rej){
+      if (area === 'All States') {
+        asyncRequest('state_code.json')
+          .then(formatStateCodes)
+          .then(function(codes) { res(codes); })
+          .catch(function(){log('fail to get internal state_code JSON data');});
+      } else {
+        asyncRequest('neighborhood_code.json')
+          .then(formatNeighborhoodCodes.bind(null, area))
+          .then(function(codes) { res(codes); })
+          .catch(function(){log('fail to get internal neighborhood_code JSON data');});
+      }
+    });
+	}
+
+  var asyncRequest = function(url) {
+    log('asyncRequest()');
+    return new Promise(function(res, rej){
+      $.ajax({
+        url: url,
+        success: function (data) {res(data);},
+        error: function() {rej("fail to get code");}
+      }); // end ajax
+    }); // end Promise
+  };
+
+  function formatStateCodes (codes) {
+  	log('formatStateCodes()');
+  	return new Promise(function(res) {
+  		var formattedCodes = codes.map(function(c) {
+  			var str = c.code;
+  			c.code = 'S' + str;
+  			return c;
+  		});
+  		res(formattedCodes);
+  	});
+  }
+
+	function formatNeighborhoodCodes (area, codes) {
+    log('formatNeighborhoodCodes()');
+    return new Promise(function(res, rej){
+      var abbrArea = abbrState(area, 'abbr');
+      var formattedCodes = codes
+      .filter(function(code){
+        return code.metro === abbrArea;
+      })
+      .map(function(obj){
+        var codeArray = obj['City|Code'].split('|');
+        var str = codeArray[1];
+        var code = 'N' + str;
+        return {
+          'name': obj.name,
+          'code': code
+        };
+      });
+      res(formattedCodes);
+    });
+  }
+
+	return {
+		getCodesFromJSON: getCodesFromJSON
+	};
+})(jQuery);
+
+var App = App || {};
+
+App.Coordinates = (function ($) {
+	'use strict';
+
+	function getLatLng (area, args /* title, idType, code, housePrice */) {
+		log('getLatLng()');
+		// get search term for Latitude and Longitude
+    var searchName = area === 'All States' ? '' : area;
+    var address =  args.title + ', ' + searchName + ', United States';
+    log(address);
+
+    return new Promise(function(res, rej){
+      var geocoder = new google.maps.Geocoder();
+      var latLng = [];
+      geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          latLng[0] = results[0].geometry.location.lat();
+          latLng[1] = results[0].geometry.location.lng();
+          args.code['latLng'] = latLng;
+          res({
+          	'title': args.title,
+          	'idType': args.idType,
+          	'code': args.code,
+          	'housePrice': args.housePrice,
+          });
+        } 
+        else {
+          rej("cannot find geocode");
+        }
+      }); // end geocode function
+    }); // end promise
+	}
+
+	return {
+		get: getLatLng
+	};
+
+})(jQuery);
+var App = App || {};
+
+App.DataCleaner = (function ($) {
+  'use strict';
+
+  function cleanApiDataForStorage (codes /* code, name */, response) {
+    log('cleanApiDataForStorage()');
+    return new Promise(function(res){
+      var dat = response.dataset.data;
+      var idType = codes.code.includes('S') ? 'stateId' : 'neighborhoodId';
+      var codeData = {'id': codes.code, 'title': codes.name};
+      var housePriceData = {
+        [idType]: codes.code,
+        'value': {
+          'year1': {
+            // check to see if index of array exists in case dataset does not exist
+            // for a particular year. if it does not, returns 0
+            'avg': 0 in dat ? dat[0][1] : 0,
+            'percent': percentChg(dat[0][1], 1 in dat ? dat[1][1] : 0)
+          },
+          'year3': {
+            'avg': 2 in dat ? dat[2][1] : 0,
+            'percent': percentChg(dat[0][1], 2 in dat ? dat[2][1] : 0)
+          },
+          'year5': {
+            'avg': 4 in dat ? dat[4][1] : 0,
+            'percent': percentChg(dat[0][1], 4 in dat ? dat[4][1] : 0)
+          },
+          'year10': {
+            'avg': 9 in dat ? dat[9][1] : 0,
+            'percent': percentChg(dat[0][1], 9 in dat ? dat[9][1] : 0)
+          }
+        },
+      };
+      res({
+        'title': codes.name,
+        'idType': idType,
+        'code': codeData,
+        'housePrice': housePriceData
+      });
+    });
+  }
+
+  function formatMetaDataForStorage () {}
+
+  return {
+    formatQuandlData: cleanApiDataForStorage
+  };
+})(jQuery);
+var App = App || {};
+
+App.Quandl = (function ($) {
+	'use strict';
+
+	var getDataByCode = function(area_code) {
+    log('request()');
+    return new Promise(function(res, rej) {
+      var BASE_URL = 'https://www.quandl.com/api/v3';
+      var endpoint = '/datasets/ZILL/';
+      var dataParam = area_code + '_A.json';
+      var queryParams = {
+        'api_key' : '1aGVznRZH7ckoyhVtges',
+        'collapse': 'annual'
+      };
+      var query = '?';
+      for (var param in queryParams) {
+        query = query + param + '=' + queryParams[param] + '&';
+      }
+      query = query.substring(0, query.length - 1);
+
+      var url = BASE_URL + endpoint + dataParam + query;
+
+      log(url);
+
+      $.ajax({
+        url: url,
+        dataType: "json",
+        success: function (response) {res(response);},
+        error: function () {rej(log("load data failed for: " + url + " ignore and move on."));} 
+      }); // end ajax
+    }); // end promise
+  };
+
+	return {
+		getDataByCode: getDataByCode
+	};
+
+})(jQuery);
+var App = App || {};
+
+App.DisplayFormatter = (function ($) {
+	'use strict';
+
+	function formatForDisplay(area, chosenDataType, currentTime, data) {
+    return new Promise(function(res, rej) {
+      // build information to be shown in marker
+      var info = ['Place: @place <br>',
+                  '@dataType: @displayData <br>',
+                  'Average over: @time years'];
+
+      var displayDataKey =  'year' + currentTime;
+      var resultData = data.value[displayDataKey];
+      var markerSize;
+      var displayData;
+
+      if (chosenDataType === 'HousePrice') {
+        displayData = resultData.avg;
+        markerSize = displayData/100;
+        displayData = displayData === 0 ? 'no data' : displayData.format(2,3,',','.');
+        displayData = '$' + displayData;
+      } 
+      if (chosenDataType === 'PriceChange') {
+        displayData = resultData.percent;
+        markerSize = currentTime > 4 ? displayData * 400 : displayData * 1100;
+        displayData = displayData === 0 ? 'no data' : displayData.format(2,3,',','.');
+        displayData = displayData + '%';
+      }
+
+      info = info.join('')
+        .replace('@place', data.title)
+        .replace('@dataType', chosenDataType)
+        .replace('@displayData', displayData)
+        .replace('@time', currentTime);
+
+      res({
+        'info': info,
+        'area': area,
+        'markerSize': markerSize
+      });
+    });
+	}
+
+	return {
+    format: formatForDisplay
+  };
+
+})(jQuery);
+var App = App || {};
+
+App.Presenter = (function ($) {
+	'use strict';
+
+	var area;
+	var dataType;
+	var timeRange;
+	var currentArea;
+
+	function executeInput(area_input, dataType_input, timeRange_input) {
+		area = area_input;
+		dataType = dataType_input;
+		timeRange = timeRange_input;
+
+		markerViewController();
+		mapViewController(area_input);
+		
+		App.AppStateManager.get(area);
+	}
+
+	function markerViewController () {
+		App.MarkerView.clearMarkers();
+		App.MarkerView.clearInfoWindow();
+	}
+
+	/*
+	 * Zoom and Pan the map to user's area of interest.
+	 *
+	 * the function also stores currentArea as area_input, so that
+	 * if user has already zoomed / panned to their desired location
+	 * i.e. if user is not changing their current area of interest,
+	 * the MapView changes won't be triggered.
+	 */
+	function mapViewController (area_input) {
+		if (currentArea === area_input) {
+			return;
+		}
+		currentArea = area_input;
+		if (area_input === 'All States') {
+			App.MapView.move(LAT_LNG_USA);
+			App.MapView.zoom(4);
+		} 
+		else {
+			App.AppStateManager.getCoordinateByName(area_input)
+				.then(App.MapView.move);
+			App.MapView.zoom(6);
+		}
+	}
+
+	function notificationViewController (area, timer, existingData, customEvent) {
+		if (customEvent) {
+			App.NotificationView.customMessage(customEvent);
+		} 
+		else if (timer > 0 && !existingData) {
+			App.NotificationView.startLoad(timer);
+		} 
+		else if (existingData) {
+			App.NotificationView.resumeLoadQuestion(area, timer, existingData);
+			App.ControlView.init();
+		} 
+		else if (area) {
+			App.NotificationView.noData(area);
+		} 
+		else {
+			App.NotificationView.close();
+		}
+	}
+
+	function controlViewController (show) {
+		show === 'show' ? App.ControlView.show() : App.ControlView.hide();
+	}
+
+	// pass-through function to AppStateManager (for access control to Presenter)
+	function pauseLoad() {
+		App.NotificationView.close();
+		App.ControlView.show();
+		App.AppStateManager.stopLoadingData();
+	}
+
+	// pass-through function to AppStateManager (for access control to Presenter)
+	function resumeLoad(area) {
+		log('resumeDataLoad');
+		App.NotificationView.close();
+		App.AppStateManager.resumeLoadingData(area);
+	}
+
+	// pass-through function to AppStateManager (for access control to Presenter)
+	function continueWithoutLoad(area) {
+		log('continue');
+		App.NotificationView.close();
+		App.ControlView.show();
+		App.AppStateManager.continueWithoutLoadingData(area);
+	}
+
+	function render(data) {
+		App.DisplayFormatter.format(area, dataType, timeRange, data)
+			.then(App.MarkerView.setMarker.bind(null, data))
+			.catch();
+	}
+
+	return {
+		executeInput: executeInput,
+		pauseDataLoad: pauseLoad,
+		resumeDataLoad: resumeLoad,
+		continue: continueWithoutLoad,
+		createNotification: notificationViewController,
+		closeNotification: notificationViewController,
+		toggleControlView:  controlViewController,
+		render: render
+	};
+
+})(jQuery);
+var App = App || {};
+
+App.ControlView = (function ($) {
+  'use strict';
+
+  var state;
+  var dataType;
+  var timeRange;
+
+  var init = function() {
+    $('.js-search-location').submit(function(e){
+      e.preventDefault();
+
+      state = $( "#js-state option:selected" ).val();
+      dataType = $( "#js-data-type option:selected" ).val();
+      timeRange = $( "#js-year option:selected" ).val();
+
+      App.Presenter.executeInput(state, dataType, timeRange);
+    });
+
+    $('.js-notify-pause-loop').click(function(e){
+      e.preventDefault();
+      log('stop data loading loop');
+      App.Presenter.pauseDataLoad();
+    });
+
+    $('.js-notify-resume-loop').click(function(e){
+      e.preventDefault();
+      log('resume data loading loop');
+      App.Presenter.resumeDataLoad(state);
+    });
+
+    $('.js-notify-continue-no-resume').click(function(e){
+      e.preventDefault();
+      log('resume data loading loop');
+      App.Presenter.continue(state);
+    });
+  };
+
+  function hideControlView() {
+    $('.js-nav').removeClass("slideInUp");
+    $('.js-nav').addClass("slideOutDown");
+  }
+
+  function showControlView() {
+    $('.js-nav').removeClass("slideOutDown");
+    $('.js-nav').addClass("slideInUp");
+  }
+
+  return {
+    init: init,
+    hide: hideControlView,
+    show: showControlView
+  };
+
+})(jQuery);
+
+var App = App || {};
+
+App.MapView = (function ($) {
+	'use strict';
+
+	var mapObject;
+  var settings =  MAP_SETTINGS;
+
+  function buildMap() {
+    settings.mapcanvas = $(".js-gmap");
+    var mapOptions = $.extend({}, settings.mapDefaults, {
+      zoom: settings.zoom,
+      center: new google.maps.LatLng(settings.latCenter, settings.lonCenter),
+      zoomControlOptions: {position: google.maps.ControlPosition.LEFT_CENTER},
+      maxZoom: settings.maxZoom,
+      minZoom: settings.minZoom,
+      styles: MAP_STYLE
+    });
+    mapObject = new google.maps.Map(settings.mapcanvas[0], mapOptions);
+  }
+
+  function zoom(level) {
+    mapObject.setZoom(level);
+  }
+
+  function moveToLocation(latLng) {
+    log('moveToLocation()');
+    var center = new google.maps.LatLng(latLng[0], latLng[1]);
+    mapObject.panTo(center);
+  }
+
+  function getMapObject() {
+    return mapObject;
+  }
+
+	return {
+		build: buildMap,
+    mapObject: getMapObject,
+    zoom: zoom,
+    move: moveToLocation
+	};
+
+})(jQuery);
+var App = App || {};
+
+App.MarkerView = (function ($) {
+	'use strict';
+
+	var markers = [];
+
+  function setMarker(data /*latLng, latlng*/, args /*info, area, markerSize*/) {
+  	// for now, args is a string that shows the tasks' thread has been followed correctly
+  	console.log('setMarker');
+  	formatInfoWindow(args.info)
+  		.then(createMarker.bind(null, args, data))
+  		.catch();
+  	Promise.resolve();
+  }
+
+  function createMarker(args, data, formattedInfo) {
+    var denominator = 100;
+    var markerColor = 'red';
+
+    if (args.area !== 'All States'){
+      var center = new google.maps.LatLng(data.latLng[0], data.latLng[1]);
+      denominator = 400;
+      markerColor = 'yellow';
+      markerColor = args.markerSize > 0 ? 'yellow' : 'lightblue';
+    }
+
+    var iconMarker = {
+      path: google.maps.SymbolPath.CIRCLE,
+      fillColor: markerColor,
+      fillOpacity: 0.6,
+      scaledSize: new google.maps.Size(args.markerSize, args.markerSize),
+      scale: args.markerSize/denominator + 4,
+      strokeWeight: 0
+    };
+
+  	var marker = new google.maps.Marker({
+      position: {lat: data.latLng[0], lng: data.latLng[1]},
+      icon: iconMarker,
+      map: App.MapView.mapObject(),
+      title: data.title,
+      infowindow: formattedInfo
+    });
+
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function(){ marker.setAnimation(null); }, 400);
+
+    markers.push(marker);
+    google.maps.event.addListener(marker, 'click', function() {
+      clearInfoWindow();
+      this.infowindow.open(App.MapView.mapObject(), this);
+    });
+    Promise.resolve();
+  }
+
+  function formatInfoWindow(info) {
+  	var myinfowindow = new google.maps.InfoWindow({
+      content: info
+    });
+    return Promise.resolve(myinfowindow);
+  }
+
+  function clearInfoWindow() {
+  	markers.map(function(marker){
+      marker.infowindow.close();
+    });
+  }
+
+  function clearMarkers() {
+  	markers.map(function(marker){
+      marker.setVisible(false);
+    });
+  }
+
+	return {
+		setMarker: setMarker,
+    clearMarkers: clearMarkers,
+    clearInfoWindow: clearInfoWindow
+	};
+
+})(jQuery);
+var App = App || {};
+
+App.NotificationView = (function ($) {
+	'use strict';
+
+  var downloadTimer;
+	var notifyMessage = 'Because this is a free service there is an API limitation. Please wait for ';
+  var notifyMessageEnd = 'seconds for data to load';
+  var noDataString = "sorry, there doesn't seem to be data for @state";
+  var unstableConnect = "please wait a little bit more, your connection seems to be unstable...";
+  var resumeLoadMessage = 'It seems like you stopped loading before all data has loaded for:';
+  var resumeLoadCustom = '@area : you have loaded @existingDataLength out of @allData. Would you like to resume?';
+  var resumeLoadBtn = $('#resume-buttons').html();
+
+	function getWaitTime(n) {
+    // set countdown animation
+    $('.js-notify-message').html(notifyMessage);
+    $('.js-notify-message-middle').html('');
+    timer(n);
+    $('.js-notify-message-last').html(notifyMessageEnd);
+    $('.js-notify').removeClass("slideOutDown");
+    $('.js-notify').addClass("slideInUp");
+  }
+
+  function closeNotification() {
+    $('.js-notify').removeClass("slideInUp");
+    $('.js-notify').addClass("slideOutDown");
+  }
+
+  function noData(state) {
+    $('.js-notify-message').html(noDataString.replace('@state', state));
+    $('.js-notify-message-middle').html('');
+    $('.js-notify-timer').html('');
+    $('.js-notify-message-last').html('');
+    $('.js-notify').removeClass("slideOutDown");
+    $('.js-notify').addClass("slideInUp");
+  }
+
+  function resume(area, totalDataAvailable, existingData) {
+    $('.js-notify-message').html(resumeLoadMessage);
+    $('.js-notify-message-middle').html(resumeLoadCustom
+      .replace('@area', area)
+      .replace('@existingDataLength', existingData.length)
+      .replace('@allData', totalDataAvailable)
+    );
+    $('.js-notify-timer').html('');
+    $('.js-notify-message-last').html(resumeLoadBtn);
+    $('.js-notify').removeClass("slideOutDown");
+    $('.js-notify').addClass("slideInUp");
+  }
+
+  function customMessage(message) {
+    $('.js-notify-message').html(message);
+    $('.js-notify-message-middle').html('');
+    stopTimer();
+    $('.js-notify-timer').html('sorry');
+    $('.js-notify-message-last').html('');
+    $('.js-notify').removeClass("slideOutDown");
+    $('.js-notify').addClass("slideInUp");
+  }
+
+  function timer(n) {
+    var timeleft = n;
+    var elem = document.getElementById("countdowntimer");
+    
+    downloadTimer = setInterval(function(){
+      timeleft--;
+      elem.classList.add('flipInX');
+      elem.innerHTML = timeleft;
+      setTimeout(function(){
+        elem.classList.remove('flipInX');
+      }, 980);
+
+      $('.js-search-location').submit(function(e){
+        e.preventDefault();
+        clearInterval(downloadTimer);
+      });
+      
+      if(timeleft <= 0) {
+        $('.js-notify-message').html('');
+        clearInterval(downloadTimer);
+        elem.innerHTML = 'sorry';
+        $('.js-notify-message-last').html(unstableConnect);
+      }
+    },1000);
+  }
+
+  function stopTimer() {
+    clearInterval(downloadTimer);
+  }
+
+  return {
+    startLoad: getWaitTime,
+    noData: noData,
+    customMessage: customMessage,
+    resumeLoadQuestion: resume,
+    close: closeNotification
+  };
+
+})(jQuery);
+// bootstrap the app
+(function ($) {
+	'use strict';
+
+	App.MapView.build();
+  App.ControlView.init();
+
+  var area = 'All States';
+  var dataType = 'HousePrice';
+  var timeRange = 1;
+  App.Presenter.executeInput(area, dataType, timeRange);
+
+})(jQuery);
