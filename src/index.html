@@ -8,6 +8,11 @@
   <!-- <script src="/page.js"></script> -->
 
   <!-- inject:css -->
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="build.css">
   <!-- endinject -->
 </head>
 <body>
@@ -17,9 +22,10 @@
   <main class="full-screen">
     <div class="js-notify full-screen notify-box animated">
       <div class="full-screen translucent-backgroud"></div>
-        <button class="js-notify-close exit-buttom btn btn-primary" onclick="notify.waitFinished()">close</button>
+        <button class="js-notify-pause-loop exit-buttom btn btn-primary">Stop Loading</button>
         <div class="message">
           <p class="js-notify-message h4 no-padding"></p>
+          <p class="js-notify-message-middle h4 no-padding"></p>
           <p class="js-notify-timer h2 no-padding animated countdowntimer" id="countdowntimer"></p>
           <p class="js-notify-message-last h4 no-padding"></p>
         </div>
@@ -28,7 +34,7 @@
       <!-- map goes here -->
     </div>
 
-    <nav class="js-nav container navbar-fixed-bottom">
+    <nav class="js-nav container full-width navbar-fixed-bottom animated">
       <form method="POST" class="js-search-location row no-margin">
         <select id="js-data-type" class="custom-select dd-data col-sm-3 col-xs-6">
           <option value="HousePrice" selected>Choose Data...</option>
@@ -105,13 +111,18 @@
     </nav>
   </main>
 
+  <script type="text/template" id="resume-buttons">
+    <button class="js-notify-resume-loop btn btn-primary">Yes, load more data</button>
+    <button class="js-notify-continue-no-resume btn btn-primary">No, I've got enough</button>
+  </script>
+
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://cdn.rawgit.com/visionmedia/page.js/master/page.js"></script>
-<!--   <script src="//cdn.jsdelivr.net/bluebird/3.5.0/bluebird.min.js"></script> -->
 
   <script type="text/javascript" id="new-gmap" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAF1sRGF7ku7L3dKictevzxUTPWc2YF6NI"></script>
 
   <!-- inject:js -->
+  <script type="text/javascript" src="build.js"></script>
   <!-- endinject -->
 </body>
 </html>

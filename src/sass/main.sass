@@ -1,14 +1,14 @@
 // inject:global
 // endinject
 
-// bower:scss
-// endbower
-
 $nav-bar-height: 50px
 $theme-light-color: #7290b8
 $theme-medium-color: #52729d
 $theme-medium-dark-color: #354459
 $theme-dark-color: #0f294b
+
+.container
+  width: 100%
 
 .btn
   border: 0
@@ -56,7 +56,7 @@ $theme-dark-color: #0f294b
     transform: translate(-50%, -60%);
     z-index: 1000
 
-    .h4, 
+    .h4,
     .h2
       margin: 0
 
@@ -90,16 +90,3 @@ $theme-dark-color: #0f294b
 .dd-state
   @extend %nav-style
   background-color: $theme-medium-dark-color
-
-// .search-bar
-//   height: $nav-bar-height
-
-//   > .searchinput
-//     background-color: $theme-light-color
-//     border: 0
-//     height: 100%
-//     outline: none
-//     padding-left: 30px
-
-//     &:focus
-//       background-color: $theme-medium-color

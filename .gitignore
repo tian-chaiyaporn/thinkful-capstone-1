@@ -1,3 +1,7 @@
 node_modules
 bower_components
+bower.json
+js-files-before-refactor
+js-mediator-router
+~gulpfile.js
 API 1aGVznRZH7ckoyhVtges
