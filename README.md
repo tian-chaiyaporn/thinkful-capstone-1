@@ -2,8 +2,8 @@
 
 This project allows user to compare house prices interactively across the US.
 This is fulfilled as part of Thinkful.com capstone project required for passing.
-The Project was created by Chaiyaporn Chinotaikul, under the guidance
-and feedbacks by Joel Wallis (a mentor at Thinkful).
+The Project was created solely by Chaiyaporn Chinotaikul, under the guidance
+and feedbacks of Joel Wallis (a mentor at Thinkful).
 
 ## Architecture
 
