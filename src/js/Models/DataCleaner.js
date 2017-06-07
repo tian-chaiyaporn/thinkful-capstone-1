@@ -1,8 +1,19 @@
+/**
+ * @file 
+ *
+ * format raw data from Quandl so it's ready to be stored in cache and localStorage
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.DataCleaner = (function ($) {
   'use strict';
 
+  // format raw data from Quandl so it's ready to be stored in cache and localStorage
   function cleanApiDataForStorage (codes /* code, name */, response) {
     log('cleanApiDataForStorage()');
     return new Promise(function(res){
@@ -40,8 +51,6 @@ App.DataCleaner = (function ($) {
       });
     });
   }
-
-  function formatMetaDataForStorage () {}
 
   return {
     formatQuandlData: cleanApiDataForStorage

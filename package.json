@@ -4,8 +4,8 @@
   "description": "for capstone",
   "scripts": {
     "start": "http-server ./build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "git subtree push --prefix build origin gh-pages"
+    "deploy": "git subtree push --prefix build origin gh-pages",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chaiyaporn Chinotaikul",
   "license": "ISC",

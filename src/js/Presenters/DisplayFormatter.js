@@ -1,3 +1,13 @@
+/**
+ * @file
+ *
+ * Format data so it is ready for display as infowindows in the Markers.
+ *
+ * MVP pattern category: Presenter
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.DisplayFormatter = (function ($) {
@@ -12,6 +22,7 @@ App.DisplayFormatter = (function ($) {
 
       var displayDataKey =  'year' + currentTime;
       var resultData = data.value[displayDataKey];
+      
       var markerSize;
       var displayData;
 

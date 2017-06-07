@@ -1,3 +1,18 @@
+/**
+ * @file 
+ *
+ * Handles all user requests from Presenter, and acts as a mediator to 
+ * interact with the rest of the models to create App State changes, and
+ * pass the events on to the Presenter
+ * 
+ * MVP pattern category: Model
+ * requires:
+ *	Presenters - Presenter
+ *	Models - AppStateStorage, AreaCodeLoader, Coordinates, DataCleaner, Quandl
+ *	Utils
+ *
+ */
+
 var App = App || {};
 
 App.AppStateManager = (function ($) {
@@ -10,6 +25,7 @@ App.AppStateManager = (function ($) {
 		// get data from cache
 		App.AppStateStorage.get(area)
 			.then(function(existingData) {
+				// if data exists in cache, check if dataset has all loaded or not
 				if (!$.isEmptyObject(existingData)) {
 					App.AreaCodeLoader.getCodesFromJSON(area)
 						.then(function(totalDataAvailable) {
@@ -65,11 +81,13 @@ App.AppStateManager = (function ($) {
     return setInterval(run, 1000);
   }
 
+  // stop the above function from continuing with loading and rendering new data
   function stopLoadingData () {
 		clearInterval(apiLoop);
 		App.AppStateStorage.storeInLocal();
 	}
 
+	// resumes startLoadingData function
 	function resumeLoadingData (area) {
 		App.AppStateStorage.get(area)
 			.then(renderExistingData)
@@ -80,12 +98,14 @@ App.AppStateManager = (function ($) {
 			});
 	}
 
+	// do not resumes startLoadingData function, only render the data existing in cache
 	function continueWithoutLoadingData (area) {
 		App.AppStateStorage.get(area)
 			.then(renderExistingData)
 			.catch();
 	}
 
+	// render data that already exists in cache (receives existing data in cache)
 	function renderExistingData (data) {
 		data.forEach(function(datum) {
 			renderAppState(datum);

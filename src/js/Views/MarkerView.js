@@ -1,3 +1,13 @@
+/**
+ * @file 
+ *
+ * Create, store, and provide functions to control Google Map Markers
+ * 
+ * MVP pattern category: View
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.MarkerView = (function ($) {
@@ -5,8 +15,8 @@ App.MarkerView = (function ($) {
 
 	var markers = [];
 
+  // kick off the process for creating a marker
   function setMarker(data /*latLng, latlng*/, args /*info, area, markerSize*/) {
-  	// for now, args is a string that shows the tasks' thread has been followed correctly
   	console.log('setMarker');
   	formatInfoWindow(args.info)
   		.then(createMarker.bind(null, args, data))
@@ -14,6 +24,7 @@ App.MarkerView = (function ($) {
   	Promise.resolve();
   }
 
+  // create actual marker with the required settings
   function createMarker(args, data, formattedInfo) {
     var denominator = 100;
     var markerColor = 'red';

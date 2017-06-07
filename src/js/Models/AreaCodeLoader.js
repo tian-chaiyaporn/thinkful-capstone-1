@@ -1,8 +1,19 @@
+/**
+ * @file 
+ *
+ * get area-codes internally stored JSON files. This is needed to make request to Quandl 
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.AreaCodeLoader = (function ($) {
 	'use strict';
 
+  // get area-codes internally stored JSON files
 	function getCodesFromJSON (area) {
 		console.log('getCodeFromJSON()');
 		// logic to choose whether the user requests for all states or single state
@@ -21,6 +32,7 @@ App.AreaCodeLoader = (function ($) {
     });
 	}
 
+  // asynchronouse request fired with a given url
   var asyncRequest = function(url) {
     log('asyncRequest()');
     return new Promise(function(res, rej){
@@ -32,6 +44,7 @@ App.AreaCodeLoader = (function ($) {
     }); // end Promise
   };
 
+  // format area codes (use-states) into a useful format for the app
   function formatStateCodes (codes) {
   	log('formatStateCodes()');
   	return new Promise(function(res) {
@@ -44,6 +57,7 @@ App.AreaCodeLoader = (function ($) {
   	});
   }
 
+  // format area codes (neighborhoods) into a useful fomat for the app
 	function formatNeighborhoodCodes (area, codes) {
     log('formatNeighborhoodCodes()');
     return new Promise(function(res, rej){

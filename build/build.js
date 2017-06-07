@@ -1,7 +1,7 @@
 /**
  * @file 
  *
- * Provides Global Constants
+ * Provides Global Constants for various settings
  * 
  * MVP pattern category: global constants
  *
@@ -237,6 +237,7 @@ var MOCK_APP_STATE_OBJ = {
  * Provides Global Utility functions
  * 
  * MVP pattern category: helper functions
+ * requires: Settings
  *
  */
 
@@ -355,6 +356,21 @@ var abbrState = function(input, to){
     }
 };
 
+/**
+ * @file 
+ *
+ * Handles all user requests from Presenter, and acts as a mediator to 
+ * interact with the rest of the models to create App State changes, and
+ * pass the events on to the Presenter
+ * 
+ * MVP pattern category: Model
+ * requires:
+ *	Presenters - Presenter
+ *	Models - AppStateStorage, AreaCodeLoader, Coordinates, DataCleaner, Quandl
+ *	Utils
+ *
+ */
+
 var App = App || {};
 
 App.AppStateManager = (function ($) {
@@ -367,6 +383,7 @@ App.AppStateManager = (function ($) {
 		// get data from cache
 		App.AppStateStorage.get(area)
 			.then(function(existingData) {
+				// if data exists in cache, check if dataset has all loaded or not
 				if (!$.isEmptyObject(existingData)) {
 					App.AreaCodeLoader.getCodesFromJSON(area)
 						.then(function(totalDataAvailable) {
@@ -422,11 +439,13 @@ App.AppStateManager = (function ($) {
     return setInterval(run, 1000);
   }
 
+  // stop the above function from continuing with loading and rendering new data
   function stopLoadingData () {
 		clearInterval(apiLoop);
 		App.AppStateStorage.storeInLocal();
 	}
 
+	// resumes startLoadingData function
 	function resumeLoadingData (area) {
 		App.AppStateStorage.get(area)
 			.then(renderExistingData)
@@ -437,12 +456,14 @@ App.AppStateManager = (function ($) {
 			});
 	}
 
+	// do not resumes startLoadingData function, only render the data existing in cache
 	function continueWithoutLoadingData (area) {
 		App.AppStateStorage.get(area)
 			.then(renderExistingData)
 			.catch();
 	}
 
+	// render data that already exists in cache (receives existing data in cache)
 	function renderExistingData (data) {
 		data.forEach(function(datum) {
 			renderAppState(datum);
@@ -472,6 +493,19 @@ App.AppStateManager = (function ($) {
 
 })(jQuery);
 
+/**
+ * @file 
+ *
+ * Provides functions for Getting and Setting APP STATE in cache and local storage.
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager,
+ *					 Utils,
+ *					 Presenter (for creating notifications. This violates the architecture, but it is minor,
+ *											although it may need to change if the app grows in the future)
+ *
+ */
+
 var App = App || {};
 
 App.AppStateStorage = (function ($) {
@@ -489,7 +523,8 @@ App.AppStateStorage = (function ($) {
 			if (APP_STATE['house-prices'].length === 0) {
 				getLocalStorageData()
 					.then(function(localData) {
-						if (localData) {
+						// if local data is not empty, put it in cache and recall function
+						if (localData['house-prices'].length > 0) {
 							APP_STATE = localData;
 							App.AppStateManager.get(area);
 						} else {
@@ -568,6 +603,26 @@ App.AppStateStorage = (function ($) {
 		return APP_STATE['usa-states'].find(function(usaState) {return usaState.id === id;});
 	}
 
+	// query function: get data from browser's localStorage
+	function getLocalStorageData () {
+		log('getLocalStorage()');
+		return new Promise(function(res) {
+			var data = JSON.parse(localStorage.getItem('HousePriceData'));
+			res(data);
+		}); 
+	}
+
+	// query function: get latitude and longitude from cached data by name
+	function getLatLngByName (name) {
+		var UsaStateData = APP_STATE['usa-states'].find(function(state){return state.title === name;});
+		if (!UsaStateData) {
+			var errorMessage = 'please download the complete "All States" data first (it only takes 50 seconds)';
+			App.Presenter.createNotification(0, 0, 0, errorMessage);
+			throw new Error('please download "All States" data first');
+		}
+		return Promise.resolve(UsaStateData.latLng);
+	}
+
 	// add function: atomically add data to APP_STATE as cache
 	// args: title, idType, code, housePrice
 	function setAppState (area, args) {
@@ -601,26 +656,6 @@ App.AppStateStorage = (function ($) {
     });
 	}
 
-	// query function: get data from browser's localStorage
-	function getLocalStorageData () {
-		log('getLocalStorage()');
-		return new Promise(function(res) {
-			var data = JSON.parse(localStorage.getItem('HousePriceData'));
-			res(data);
-		}); 
-	}
-
-	// query function: get latitude and longitude from cached data by name
-	function getLatLngByName (name) {
-		var UsaStateData = APP_STATE['usa-states'].find(function(state){return state.title === name;});
-		if (!UsaStateData) {
-			var errorMessage = 'please download the complete "All States" data first (it only takes 50 seconds)';
-			App.Presenter.createNotification(0, 0, 0, errorMessage);
-			throw new Error('please download "All States" data first');
-		}
-		return Promise.resolve(UsaStateData.latLng);
-	}
-
 	return {
 		get: getAppState,
 		set: setAppState,
@@ -630,11 +665,22 @@ App.AppStateStorage = (function ($) {
 
 })(jQuery);
 
+/**
+ * @file 
+ *
+ * get area-codes internally stored JSON files. This is needed to make request to Quandl 
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.AreaCodeLoader = (function ($) {
 	'use strict';
 
+  // get area-codes internally stored JSON files
 	function getCodesFromJSON (area) {
 		console.log('getCodeFromJSON()');
 		// logic to choose whether the user requests for all states or single state
@@ -653,6 +699,7 @@ App.AreaCodeLoader = (function ($) {
     });
 	}
 
+  // asynchronouse request fired with a given url
   var asyncRequest = function(url) {
     log('asyncRequest()');
     return new Promise(function(res, rej){
@@ -664,6 +711,7 @@ App.AreaCodeLoader = (function ($) {
     }); // end Promise
   };
 
+  // format area codes (use-states) into a useful format for the app
   function formatStateCodes (codes) {
   	log('formatStateCodes()');
   	return new Promise(function(res) {
@@ -676,6 +724,7 @@ App.AreaCodeLoader = (function ($) {
   	});
   }
 
+  // format area codes (neighborhoods) into a useful fomat for the app
 	function formatNeighborhoodCodes (area, codes) {
     log('formatNeighborhoodCodes()');
     return new Promise(function(res, rej){
@@ -702,11 +751,22 @@ App.AreaCodeLoader = (function ($) {
 	};
 })(jQuery);
 
+/**
+ * @file 
+ *
+ * gets Coordinates based on address, and put in into a format ready for storage
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.Coordinates = (function ($) {
 	'use strict';
 
+  // gets Coordinates based on address, and put in into a format ready for storage
 	function getLatLng (area, args /* title, idType, code, housePrice */) {
 		log('getLatLng()');
 		// get search term for Latitude and Longitude
@@ -721,7 +781,7 @@ App.Coordinates = (function ($) {
         if (status == google.maps.GeocoderStatus.OK) {
           latLng[0] = results[0].geometry.location.lat();
           latLng[1] = results[0].geometry.location.lng();
-          args.code['latLng'] = latLng;
+          args.code.latLng = latLng;
           res({
           	'title': args.title,
           	'idType': args.idType,
@@ -741,11 +801,22 @@ App.Coordinates = (function ($) {
 	};
 
 })(jQuery);
+/**
+ * @file 
+ *
+ * format raw data from Quandl so it's ready to be stored in cache and localStorage
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.DataCleaner = (function ($) {
   'use strict';
 
+  // format raw data from Quandl so it's ready to be stored in cache and localStorage
   function cleanApiDataForStorage (codes /* code, name */, response) {
     log('cleanApiDataForStorage()');
     return new Promise(function(res){
@@ -784,17 +855,26 @@ App.DataCleaner = (function ($) {
     });
   }
 
-  function formatMetaDataForStorage () {}
-
   return {
     formatQuandlData: cleanApiDataForStorage
   };
 })(jQuery);
+/**
+ * @file 
+ *
+ * compose url and make ajax request to Quandl for house price data
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.Quandl = (function ($) {
 	'use strict';
 
+  // get Quandl data from a provided area-code
 	var getDataByCode = function(area_code) {
     log('request()');
     return new Promise(function(res, rej) {
@@ -829,6 +909,16 @@ App.Quandl = (function ($) {
 	};
 
 })(jQuery);
+/**
+ * @file
+ *
+ * Format data so it is ready for display as infowindows in the Markers.
+ *
+ * MVP pattern category: Presenter
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.DisplayFormatter = (function ($) {
@@ -843,6 +933,7 @@ App.DisplayFormatter = (function ($) {
 
       var displayDataKey =  'year' + currentTime;
       var resultData = data.value[displayDataKey];
+      
       var markerSize;
       var displayData;
 
@@ -878,6 +969,21 @@ App.DisplayFormatter = (function ($) {
   };
 
 })(jQuery);
+/**
+ * @file 
+ *
+ * Presenter handles all User Interactions and Events from the Views, 
+ * process and pass them on to the Model layer, and fire changes to the View layer.
+ * 
+ * MVP pattern category: Presenter
+ * requires:
+ * 	Views - MapView, MarkerView, ControlView, NotificationView
+ *	Presenters - DisplayFormatter
+ *	Models - AppStateManager
+ *	Utils
+ *
+ */
+
 var App = App || {};
 
 App.Presenter = (function ($) {
@@ -888,20 +994,23 @@ App.Presenter = (function ($) {
 	var timeRange;
 	var currentArea;
 
+	// execute user input from search button
 	function executeInput(area_input, dataType_input, timeRange_input) {
 		area = area_input;
 		dataType = dataType_input;
 		timeRange = timeRange_input;
 
-		markerViewController();
+		markerViewController('clear');
 		mapViewController(area_input);
-		
+
 		App.AppStateManager.get(area);
 	}
 
-	function markerViewController () {
-		App.MarkerView.clearMarkers();
-		App.MarkerView.clearInfoWindow();
+	function markerViewController (action) {
+		if (action === 'clear') {
+			App.MarkerView.clearMarkers();
+			App.MarkerView.clearInfoWindow();
+		}
 	}
 
 	/*
@@ -928,20 +1037,26 @@ App.Presenter = (function ($) {
 		}
 	}
 
+	// ** note: function can probably take in args as object for better readability
 	function notificationViewController (area, timer, existingData, customEvent) {
+		// notify user with a custom message
 		if (customEvent) {
 			App.NotificationView.customMessage(customEvent);
 		} 
+		// notify user how long it takes to download data
 		else if (timer > 0 && !existingData) {
 			App.NotificationView.startLoad(timer);
 		} 
+		// notify user not all data has loaded, and ask if user wants to continue loading, or leave it
 		else if (existingData) {
 			App.NotificationView.resumeLoadQuestion(area, timer, existingData);
 			App.ControlView.init();
 		} 
+		// notify user that data is not available for a particular usa-state
 		else if (area) {
 			App.NotificationView.noData(area);
 		} 
+		// close the notification window
 		else {
 			App.NotificationView.close();
 		}
@@ -952,6 +1067,7 @@ App.Presenter = (function ($) {
 	}
 
 	// pass-through function to AppStateManager (for access control to Presenter)
+	// pause app from getting more data from Quandl
 	function pauseLoad() {
 		App.NotificationView.close();
 		App.ControlView.show();
@@ -959,6 +1075,7 @@ App.Presenter = (function ($) {
 	}
 
 	// pass-through function to AppStateManager (for access control to Presenter)
+	// resume app in getting more data from Quandl
 	function resumeLoad(area) {
 		log('resumeDataLoad');
 		App.NotificationView.close();
@@ -966,6 +1083,7 @@ App.Presenter = (function ($) {
 	}
 
 	// pass-through function to AppStateManager (for access control to Presenter)
+	// continue app without getting more data from Quandl, and use stored data
 	function continueWithoutLoad(area) {
 		log('continue');
 		App.NotificationView.close();
@@ -973,6 +1091,7 @@ App.Presenter = (function ($) {
 		App.AppStateManager.continueWithoutLoadingData(area);
 	}
 
+	// format data-point and render it to MarkerView
 	function render(data) {
 		App.DisplayFormatter.format(area, dataType, timeRange, data)
 			.then(App.MarkerView.setMarker.bind(null, data))
@@ -991,6 +1110,16 @@ App.Presenter = (function ($) {
 	};
 
 })(jQuery);
+/**
+ * @file 
+ *
+ * Listeners for User Events and provides functions for hiding and showing the bottom nav bar
+ * 
+ * MVP pattern category: View
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.ControlView = (function ($) {
@@ -1000,6 +1129,7 @@ App.ControlView = (function ($) {
   var dataType;
   var timeRange;
 
+  // initialize listeners for the buttons in the app
   var init = function() {
     $('.js-search-location').submit(function(e){
       e.preventDefault();
@@ -1011,13 +1141,13 @@ App.ControlView = (function ($) {
       App.Presenter.executeInput(state, dataType, timeRange);
     });
 
-    $('.js-notify-pause-loop').click(function(e){
+    $('.js-notify-pause-data-loading').click(function(e){
       e.preventDefault();
       log('stop data loading loop');
       App.Presenter.pauseDataLoad();
     });
 
-    $('.js-notify-resume-loop').click(function(e){
+    $('.js-notify-resume-data-loading').click(function(e){
       e.preventDefault();
       log('resume data loading loop');
       App.Presenter.resumeDataLoad(state);
@@ -1030,11 +1160,13 @@ App.ControlView = (function ($) {
     });
   };
 
+  // hide bottom navigation bar (bottom select bar)
   function hideControlView() {
     $('.js-nav').removeClass("slideInUp");
     $('.js-nav').addClass("slideOutDown");
   }
 
+  // show bottom navigation bar (bottom select bar)
   function showControlView() {
     $('.js-nav').removeClass("slideOutDown");
     $('.js-nav').addClass("slideInUp");
@@ -1047,6 +1179,16 @@ App.ControlView = (function ($) {
   };
 
 })(jQuery);
+
+/**
+ * @file 
+ *
+ * Provides functions relating to building and navigating Google Map
+ * 
+ * MVP pattern category: View
+ * requires: Presenter, Settings, Utils
+ *
+ */
 
 var App = App || {};
 
@@ -1069,19 +1211,15 @@ App.MapView = (function ($) {
     mapObject = new google.maps.Map(settings.mapcanvas[0], mapOptions);
   }
 
-  function zoom(level) {
-    mapObject.setZoom(level);
-  }
-
   function moveToLocation(latLng) {
     log('moveToLocation()');
     var center = new google.maps.LatLng(latLng[0], latLng[1]);
     mapObject.panTo(center);
   }
 
-  function getMapObject() {
-    return mapObject;
-  }
+  function zoom(level) { mapObject.setZoom(level); }
+
+  function getMapObject() { return mapObject; }
 
 	return {
 		build: buildMap,
@@ -1091,6 +1229,16 @@ App.MapView = (function ($) {
 	};
 
 })(jQuery);
+/**
+ * @file 
+ *
+ * Create, store, and provide functions to control Google Map Markers
+ * 
+ * MVP pattern category: View
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.MarkerView = (function ($) {
@@ -1098,8 +1246,8 @@ App.MarkerView = (function ($) {
 
 	var markers = [];
 
+  // kick off the process for creating a marker
   function setMarker(data /*latLng, latlng*/, args /*info, area, markerSize*/) {
-  	// for now, args is a string that shows the tasks' thread has been followed correctly
   	console.log('setMarker');
   	formatInfoWindow(args.info)
   		.then(createMarker.bind(null, args, data))
@@ -1107,6 +1255,7 @@ App.MarkerView = (function ($) {
   	Promise.resolve();
   }
 
+  // create actual marker with the required settings
   function createMarker(args, data, formattedInfo) {
     var denominator = 100;
     var markerColor = 'red';
@@ -1172,6 +1321,16 @@ App.MarkerView = (function ($) {
 	};
 
 })(jQuery);
+/**
+ * @file
+ *
+ * Various user notifications for app to interact with users using feedbacks
+ *
+ * MVP pattern category: View
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.NotificationView = (function ($) {
@@ -1186,6 +1345,7 @@ App.NotificationView = (function ($) {
   var resumeLoadCustom = '@area : you have loaded @existingDataLength out of @allData. Would you like to resume?';
   var resumeLoadBtn = $('#resume-buttons').html();
 
+  // notify user of how long it takes for data to load
 	function getWaitTime(n) {
     // set countdown animation
     $('.js-notify-message').html(notifyMessage);
@@ -1196,11 +1356,13 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // close notification window
   function closeNotification() {
     $('.js-notify').removeClass("slideInUp");
     $('.js-notify').addClass("slideOutDown");
   }
 
+  // notify user that data is not available for a particular usa-state
   function noData(state) {
     $('.js-notify-message').html(noDataString.replace('@state', state));
     $('.js-notify-message-middle').html('');
@@ -1210,6 +1372,8 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // notify user that not all data has loaded, and ask if user wants to continue the loading
+  // or just leave it as is
   function resume(area, totalDataAvailable, existingData) {
     $('.js-notify-message').html(resumeLoadMessage);
     $('.js-notify-message-middle').html(resumeLoadCustom
@@ -1223,6 +1387,7 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // notify user with a message (for error handling that can be solved by user)
   function customMessage(message) {
     $('.js-notify-message').html(message);
     $('.js-notify-message-middle').html('');
@@ -1233,10 +1398,11 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // countdown timer: supply n as time
   function timer(n) {
     var timeleft = n;
     var elem = document.getElementById("countdowntimer");
-    
+
     downloadTimer = setInterval(function(){
       timeleft--;
       elem.classList.add('flipInX');
@@ -1249,7 +1415,7 @@ App.NotificationView = (function ($) {
         e.preventDefault();
         clearInterval(downloadTimer);
       });
-      
+
       if(timeleft <= 0) {
         $('.js-notify-message').html('');
         clearInterval(downloadTimer);
@@ -1259,6 +1425,7 @@ App.NotificationView = (function ($) {
     },1000);
   }
 
+  // countdown timer: stop timer
   function stopTimer() {
     clearInterval(downloadTimer);
   }

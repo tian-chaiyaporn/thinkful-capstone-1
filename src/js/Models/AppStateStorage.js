@@ -1,3 +1,16 @@
+/**
+ * @file 
+ *
+ * Provides functions for Getting and Setting APP STATE in cache and local storage.
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager,
+ *					 Utils,
+ *					 Presenter (for creating notifications. This violates the architecture, but it is minor,
+ *											although it may need to change if the app grows in the future)
+ *
+ */
+
 var App = App || {};
 
 App.AppStateStorage = (function ($) {
@@ -15,7 +28,8 @@ App.AppStateStorage = (function ($) {
 			if (APP_STATE['house-prices'].length === 0) {
 				getLocalStorageData()
 					.then(function(localData) {
-						if (localData) {
+						// if local data is not empty, put it in cache and recall function
+						if (localData['house-prices'].length > 0) {
 							APP_STATE = localData;
 							App.AppStateManager.get(area);
 						} else {
@@ -94,6 +108,26 @@ App.AppStateStorage = (function ($) {
 		return APP_STATE['usa-states'].find(function(usaState) {return usaState.id === id;});
 	}
 
+	// query function: get data from browser's localStorage
+	function getLocalStorageData () {
+		log('getLocalStorage()');
+		return new Promise(function(res) {
+			var data = JSON.parse(localStorage.getItem('HousePriceData'));
+			res(data);
+		}); 
+	}
+
+	// query function: get latitude and longitude from cached data by name
+	function getLatLngByName (name) {
+		var UsaStateData = APP_STATE['usa-states'].find(function(state){return state.title === name;});
+		if (!UsaStateData) {
+			var errorMessage = 'please download the complete "All States" data first (it only takes 50 seconds)';
+			App.Presenter.createNotification(0, 0, 0, errorMessage);
+			throw new Error('please download "All States" data first');
+		}
+		return Promise.resolve(UsaStateData.latLng);
+	}
+
 	// add function: atomically add data to APP_STATE as cache
 	// args: title, idType, code, housePrice
 	function setAppState (area, args) {
@@ -125,26 +159,6 @@ App.AppStateStorage = (function ($) {
       	rej('localStorage do not exist in this browser');
       }
     });
-	}
-
-	// query function: get data from browser's localStorage
-	function getLocalStorageData () {
-		log('getLocalStorage()');
-		return new Promise(function(res) {
-			var data = JSON.parse(localStorage.getItem('HousePriceData'));
-			res(data);
-		}); 
-	}
-
-	// query function: get latitude and longitude from cached data by name
-	function getLatLngByName (name) {
-		var UsaStateData = APP_STATE['usa-states'].find(function(state){return state.title === name;});
-		if (!UsaStateData) {
-			var errorMessage = 'please download the complete "All States" data first (it only takes 50 seconds)';
-			App.Presenter.createNotification(0, 0, 0, errorMessage);
-			throw new Error('please download "All States" data first');
-		}
-		return Promise.resolve(UsaStateData.latLng);
 	}
 
 	return {

@@ -1,3 +1,13 @@
+/**
+ * @file 
+ *
+ * Provides functions relating to building and navigating Google Map
+ * 
+ * MVP pattern category: View
+ * requires: Presenter, Settings, Utils
+ *
+ */
+
 var App = App || {};
 
 App.MapView = (function ($) {
@@ -19,19 +29,15 @@ App.MapView = (function ($) {
     mapObject = new google.maps.Map(settings.mapcanvas[0], mapOptions);
   }
 
-  function zoom(level) {
-    mapObject.setZoom(level);
-  }
-
   function moveToLocation(latLng) {
     log('moveToLocation()');
     var center = new google.maps.LatLng(latLng[0], latLng[1]);
     mapObject.panTo(center);
   }
 
-  function getMapObject() {
-    return mapObject;
-  }
+  function zoom(level) { mapObject.setZoom(level); }
+
+  function getMapObject() { return mapObject; }
 
 	return {
 		build: buildMap,

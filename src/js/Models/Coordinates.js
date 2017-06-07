@@ -1,8 +1,19 @@
+/**
+ * @file 
+ *
+ * gets Coordinates based on address, and put in into a format ready for storage
+ * 
+ * MVP pattern category: Model
+ * requires: AppStateManager, Utils
+ *
+ */
+
 var App = App || {};
 
 App.Coordinates = (function ($) {
 	'use strict';
 
+  // gets Coordinates based on address, and put in into a format ready for storage
 	function getLatLng (area, args /* title, idType, code, housePrice */) {
 		log('getLatLng()');
 		// get search term for Latitude and Longitude
@@ -17,7 +28,7 @@ App.Coordinates = (function ($) {
         if (status == google.maps.GeocoderStatus.OK) {
           latLng[0] = results[0].geometry.location.lat();
           latLng[1] = results[0].geometry.location.lng();
-          args.code['latLng'] = latLng;
+          args.code.latLng = latLng;
           res({
           	'title': args.title,
           	'idType': args.idType,

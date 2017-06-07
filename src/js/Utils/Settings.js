@@ -1,7 +1,7 @@
 /**
  * @file 
  *
- * Provides Global Constants
+ * Provides Global Constants for various settings
  * 
  * MVP pattern category: global constants
  *

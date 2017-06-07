@@ -1,3 +1,13 @@
+/**
+ * @file
+ *
+ * Various user notifications for app to interact with users using feedbacks
+ *
+ * MVP pattern category: View
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.NotificationView = (function ($) {
@@ -12,6 +22,7 @@ App.NotificationView = (function ($) {
   var resumeLoadCustom = '@area : you have loaded @existingDataLength out of @allData. Would you like to resume?';
   var resumeLoadBtn = $('#resume-buttons').html();
 
+  // notify user of how long it takes for data to load
 	function getWaitTime(n) {
     // set countdown animation
     $('.js-notify-message').html(notifyMessage);
@@ -22,11 +33,13 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // close notification window
   function closeNotification() {
     $('.js-notify').removeClass("slideInUp");
     $('.js-notify').addClass("slideOutDown");
   }
 
+  // notify user that data is not available for a particular usa-state
   function noData(state) {
     $('.js-notify-message').html(noDataString.replace('@state', state));
     $('.js-notify-message-middle').html('');
@@ -36,6 +49,8 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // notify user that not all data has loaded, and ask if user wants to continue the loading
+  // or just leave it as is
   function resume(area, totalDataAvailable, existingData) {
     $('.js-notify-message').html(resumeLoadMessage);
     $('.js-notify-message-middle').html(resumeLoadCustom
@@ -49,6 +64,7 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // notify user with a message (for error handling that can be solved by user)
   function customMessage(message) {
     $('.js-notify-message').html(message);
     $('.js-notify-message-middle').html('');
@@ -59,10 +75,11 @@ App.NotificationView = (function ($) {
     $('.js-notify').addClass("slideInUp");
   }
 
+  // countdown timer: supply n as time
   function timer(n) {
     var timeleft = n;
     var elem = document.getElementById("countdowntimer");
-    
+
     downloadTimer = setInterval(function(){
       timeleft--;
       elem.classList.add('flipInX');
@@ -75,7 +92,7 @@ App.NotificationView = (function ($) {
         e.preventDefault();
         clearInterval(downloadTimer);
       });
-      
+
       if(timeleft <= 0) {
         $('.js-notify-message').html('');
         clearInterval(downloadTimer);
@@ -85,6 +102,7 @@ App.NotificationView = (function ($) {
     },1000);
   }
 
+  // countdown timer: stop timer
   function stopTimer() {
     clearInterval(downloadTimer);
   }

@@ -4,6 +4,7 @@
  * Provides Global Utility functions
  * 
  * MVP pattern category: helper functions
+ * requires: Settings
  *
  */
 

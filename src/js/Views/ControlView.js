@@ -1,3 +1,13 @@
+/**
+ * @file 
+ *
+ * Listeners for User Events and provides functions for hiding and showing the bottom nav bar
+ * 
+ * MVP pattern category: View
+ * requires: Presenter, Utils
+ *
+ */
+
 var App = App || {};
 
 App.ControlView = (function ($) {
@@ -7,6 +17,7 @@ App.ControlView = (function ($) {
   var dataType;
   var timeRange;
 
+  // initialize listeners for the buttons in the app
   var init = function() {
     $('.js-search-location').submit(function(e){
       e.preventDefault();
@@ -18,13 +29,13 @@ App.ControlView = (function ($) {
       App.Presenter.executeInput(state, dataType, timeRange);
     });
 
-    $('.js-notify-pause-loop').click(function(e){
+    $('.js-notify-pause-data-loading').click(function(e){
       e.preventDefault();
       log('stop data loading loop');
       App.Presenter.pauseDataLoad();
     });
 
-    $('.js-notify-resume-loop').click(function(e){
+    $('.js-notify-resume-data-loading').click(function(e){
       e.preventDefault();
       log('resume data loading loop');
       App.Presenter.resumeDataLoad(state);
@@ -37,11 +48,13 @@ App.ControlView = (function ($) {
     });
   };
 
+  // hide bottom navigation bar (bottom select bar)
   function hideControlView() {
     $('.js-nav').removeClass("slideInUp");
     $('.js-nav').addClass("slideOutDown");
   }
 
+  // show bottom navigation bar (bottom select bar)
   function showControlView() {
     $('.js-nav').removeClass("slideOutDown");
     $('.js-nav').addClass("slideInUp");
