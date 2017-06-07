@@ -5,9 +5,12 @@ This is fulfilled as part of Thinkful.com capstone project required for passing.
 The Project was created solely by Chaiyaporn Chinotaikul, under the guidance
 and feedbacks of Joel Wallis (a mentor at Thinkful).
 
+It can be viewed at: https://tian-chaiyaporn.github.io/thinkful-capstone-1/
+
 ## Architecture
 
 The Project utilizes the following architecture:
+
 
 <img src="architecture-drawing-mapProject.png"/>
 
