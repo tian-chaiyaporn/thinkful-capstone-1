@@ -23,3 +23,4 @@ Since this project is time sensitive, some improvements which are good but not n
 - Consider adding an observer/subscriber abstraction layer for better maintainability (useful when adding new modules in the future - see Joel's example in MVP playground).
 - NotificationViewControl function in Presenter module is a little hard to read logically, change it to be simpler.
 - Changes to gulpfile.js : while it works well in building the project, some functionalities are a remnant of previous app versions (inject of global sass variables), and should be cleaned up.
+- Reformat spacing so it appears correctly in GitHub
