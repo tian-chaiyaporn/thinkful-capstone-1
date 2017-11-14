@@ -14,10 +14,14 @@ App.MarkerView = (function ($) {
 	'use strict';
 
 	var markers = [];
+  var lookup = [];
 
   // kick off the process for creating a marker
   function setMarker(data /*latLng, latlng*/, args /*info, area, markerSize*/) {
-  	console.log('setMarker');
+    if (lookup.includes(data)) {
+      console.log('marker exists');
+      Promise.resolve();
+    }
   	formatInfoWindow(args.info)
   		.then(createMarker.bind(null, args, data))
   		.catch();
@@ -57,6 +61,7 @@ App.MarkerView = (function ($) {
     setTimeout(function(){ marker.setAnimation(null); }, 400);
 
     markers.push(marker);
+    lookup.push([data]);
     google.maps.event.addListener(marker, 'click', function() {
       clearInfoWindow();
       this.infowindow.open(App.MapView.mapObject(), this);
@@ -81,6 +86,7 @@ App.MarkerView = (function ($) {
   	markers.map(function(marker){
       marker.setVisible(false);
     });
+    lookup = [];
   }
 
 	return {

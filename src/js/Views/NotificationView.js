@@ -14,12 +14,12 @@ App.NotificationView = (function ($) {
 	'use strict';
 
   var downloadTimer;
-	var notifyMessage = 'Because this is a free service there is an API limitation. Please wait for ';
-  var notifyMessageEnd = 'seconds for data to load';
+	var notifyMessage = 'Because this is a free service, we can only get data one at a time. Please wait for ';
+  var notifyMessageEnd = 'seconds for data to load. Thank you for your understanding.';
   var noDataString = "sorry, there doesn't seem to be data for @state";
   var unstableConnect = "please wait a little bit more, your connection seems to be unstable...";
-  var resumeLoadMessage = 'It seems like you stopped loading before all data has loaded for:';
-  var resumeLoadCustom = '@area : you have loaded @existingDataLength out of @allData. Would you like to resume?';
+  var resumeLoadMessage = 'Data is incomplete for:';
+  var resumeLoadCustom = '@area : you have loaded @existingDataLength out of @allData. <br/>If you have waited until timer ends, or if you have enough data, please do not resume. <br />Incomplete data is an error from out provider.';
   var resumeLoadBtn = $('#resume-buttons').html();
 
   // notify user of how long it takes for data to load

@@ -18,11 +18,12 @@ App.Quandl = (function ($) {
     log('request()');
     return new Promise(function(res, rej) {
       var BASE_URL = 'https://www.quandl.com/api/v3';
-      var endpoint = '/datasets/ZILL/';
-      var dataParam = area_code + '_A.json';
+      var endpoint = '/datasets/ZILLOW/';
+      var housePriceCode = 'MLPAH';
+      var dataParam = area_code + '_' + housePriceCode;
       var queryParams = {
-        'api_key' : '1aGVznRZH7ckoyhVtges',
-        'collapse': 'annual'
+        'collapse': 'annual',
+        'api_key' : '1aGVznRZH7ckoyhVtges'
       };
       var query = '?';
       for (var param in queryParams) {
@@ -36,7 +37,6 @@ App.Quandl = (function ($) {
 
       $.ajax({
         url: url,
-        dataType: "json",
         success: function (response) {res(response);},
         error: function () {rej(log("load data failed for: " + url + " ignore and move on."));} 
       }); // end ajax

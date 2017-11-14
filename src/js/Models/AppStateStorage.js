@@ -16,20 +16,16 @@ var App = App || {};
 App.AppStateStorage = (function ($) {
 	'use strict';
 
-	var APP_STATE = {
-		'usa-states': [],
-		'neighborhoods': [],
-		'house-prices': []
-	};
+	var APP_STATE = INITIAL_USA_DATA; // please see Utils/Settings.js
 
 	function getAppState (area) {
 		return new Promise(function(res, rej) {
 			// if there is no data, check localStorage. If nothing, returns null
-			if (APP_STATE['house-prices'].length === 0) {
+			if (APP_STATE.neighborhoods.length === 0) {
 				getLocalStorageData()
 					.then(function(localData) {
 						// if local data is not empty, put it in cache and recall function
-						if (localData['house-prices'].length > 0) {
+						if (localData && Object.keys(localData).includes('house-prices') && localData['house-prices'].length > 0) {
 							APP_STATE = localData;
 							App.AppStateManager.get(area);
 						} else {

@@ -27,7 +27,10 @@ App.AreaCodeLoader = (function ($) {
         asyncRequest('neighborhood_code.json')
           .then(formatNeighborhoodCodes.bind(null, area))
           .then(function(codes) { res(codes); })
-          .catch(function(){log('fail to get internal neighborhood_code JSON data');});
+          .catch(function(error){
+            log(error);
+            log('fail to get internal neighborhood_code JSON data');
+          });
       }
     });
 	}
@@ -38,8 +41,9 @@ App.AreaCodeLoader = (function ($) {
     return new Promise(function(res, rej){
       $.ajax({
         url: url,
+        dataType: 'text',
         success: function (data) {res(data);},
-        error: function() {rej("fail to get code");}
+        error: function(error) {rej("fail to get code");}
       }); // end ajax
     }); // end Promise
   };
@@ -48,7 +52,7 @@ App.AreaCodeLoader = (function ($) {
   function formatStateCodes (codes) {
   	log('formatStateCodes()');
   	return new Promise(function(res) {
-  		var formattedCodes = codes.map(function(c) {
+  		var formattedCodes = JSON.parse(codes).map(function(c) {
   			var str = c.code;
   			c.code = 'S' + str;
   			return c;
@@ -59,23 +63,26 @@ App.AreaCodeLoader = (function ($) {
 
   // format area codes (neighborhoods) into a useful fomat for the app
 	function formatNeighborhoodCodes (area, codes) {
-    log('formatNeighborhoodCodes()');
     return new Promise(function(res, rej){
+      log('formatNeighborhoodCodes()');
       var abbrArea = abbrState(area, 'abbr');
-      var formattedCodes = codes
-      .filter(function(code){
-        return code.metro === abbrArea;
-      })
-      .map(function(obj){
-        var codeArray = obj['City|Code'].split('|');
-        var str = codeArray[1];
-        var code = 'N' + str;
-        return {
-          'name': obj.name,
-          'code': code
-        };
-      });
-      res(formattedCodes);
+
+      res(
+        JSON.parse(codes)
+          .filter(function(code){
+            var codeArray = code['STATE|CODE'].split('|');
+            return codeArray[0] === abbrArea;
+          })
+          .map(function(obj){
+            var codeArray = obj['STATE|CODE'].split('|');
+            var str = codeArray[1];
+            var code = 'N' + str;
+            return {
+              'name': obj.name + ", " + obj.metro,
+              'code': code
+            };
+          })
+      );
     });
   }
 
@@ -83,3 +90,4 @@ App.AreaCodeLoader = (function ($) {
 		getCodesFromJSON: getCodesFromJSON
 	};
 })(jQuery);
+

@@ -89,8 +89,12 @@ App.AppStateManager = (function ($) {
 
 	// resumes startLoadingData function
 	function resumeLoadingData (area) {
+		area = area ? area : 'All States';
 		App.AppStateStorage.get(area)
-			.then(renderExistingData)
+			.then(function(data) {
+				console.log(data);
+				return renderExistingData(data);
+			})
 			.then(function(currentDataLength) {
 				App.AreaCodeLoader.getCodesFromJSON(area)
 		      .then(getAndRenderDataFromAPI.bind(null, area, currentDataLength))

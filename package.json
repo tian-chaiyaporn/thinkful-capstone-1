@@ -12,9 +12,10 @@
   "dependencies": {
     "bootstrap-sass": "^3.3.7",
     "gulp": "latest",
+    "gulp-concat": "latest",
     "gulp-sass": "latest",
     "gulp-uglify": "latest",
-    "gulp-concat": "latest"
+    "node-sass": "^4.6.0"
   },
   "devDependencies": {
     "del": "^2.2.2",

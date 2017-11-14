@@ -19,8 +19,9 @@ App.ControlView = (function ($) {
 
   // initialize listeners for the buttons in the app
   var init = function() {
-    $('.js-search-location').submit(function(e){
+    $('.js-search-location').unbind('submit').submit(function(e){
       e.preventDefault();
+      console.log('logging execution');
 
       state = $( "#js-state option:selected" ).val();
       dataType = $( "#js-data-type option:selected" ).val();
