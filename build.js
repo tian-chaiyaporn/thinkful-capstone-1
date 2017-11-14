@@ -2298,7 +2298,7 @@ App.AppStateStorage = (function ($) {
 	function getAppState (area) {
 		return new Promise(function(res, rej) {
 			// if there is no data, check localStorage. If nothing, returns null
-			if (APP_STATE.neighborhoods.length === 0) {
+			if (APP_STATE.neighborhoods.length === 0 && area !== 'All States') {
 				getLocalStorageData()
 					.then(function(localData) {
 						// if local data is not empty, put it in cache and recall function
