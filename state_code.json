@@ -1,206 +1,210 @@
 [
-    {
-        "name":"California",
-        "code":"00001"
-    },
-    {
-        "name":"Texas",
-        "code":"00002"
-    },
-    {
-        "name":"New York",
-        "code":"00003"
-    },
-    {
-        "name":"Florida",
-        "code":"00004"
-    },
-    {
-        "name":"Illinois",
-        "code":"00005"
-    },
-    {
-        "name":"Pennsylvania",
-        "code":"00006"
-    },
-    {
-        "name":"Ohio",
-        "code":"00007"
-    },
-    {
-        "name":"Michigan",
-        "code":"00008"
-    },
-    {
-        "name":"Georgia",
-        "code":"00009"
-    },
-    {
-        "name":"North Carolina",
-        "code":"00010"
-    },
-    {
-        "name":"New Jersey",
-        "code":"00011"
-    },
-    {
-        "name":"Virginia",
-        "code":"00012"
-    },
-    {
-        "name":"Washington",
-        "code":"00013"
-    },
-    {
-        "name":"Massachusetts",
-        "code":"00014"
-    },
-    {
-        "name":"Indiana",
-        "code":"00015"
-    },
-    {
-        "name":"Arizona",
-        "code":"00016"
-    },
-    {
-        "name":"Tennessee",
-        "code":"00017"
-    },
-    {
-        "name":"Missouri",
-        "code":"00018"
-    },
-    {
-        "name":"Maryland",
-        "code":"00019"
-    },
-    {
-        "name":"Wisconsin",
-        "code":"00020"
-    },
-    {
-        "name":"Minnesota",
-        "code":"00021"
-    },
-    {
-        "name":"Colorado",
-        "code":"00022"
-    },
-    {
-        "name":"Alabama",
-        "code":"00023"
-    },
-    {
-        "name":"South Carolina",
-        "code":"00024"
-    },
-    {
-        "name":"Louisiana",
-        "code":"00025"
-    },
-    {
-        "name":"Kentucky",
-        "code":"00026"
-    },
-    {
-        "name":"Oregon",
-        "code":"00027"
-    },
-    {
-        "name":"Oklahoma",
-        "code":"00028"
-    },
-    {
-        "name":"Connecticut",
-        "code":"00029"
-    },
-    {
-        "name":"Iowa",
-        "code":"00030"
-    },
-    {
-        "name":"Mississippi",
-        "code":"00031"
-    },
-    {
-        "name":"Arkansas",
-        "code":"00032"
-    },
-    {
-        "name":"Utah",
-        "code":"00033"
-    },
-    {
-        "name":"Nevada",
-        "code":"00034"
-    },
-    {
-        "name":"New Mexico",
-        "code":"00035"
-    },
-    {
-        "name":"West Virginia",
-        "code":"00036"
-    },
-    {
-        "name":"Nebraska",
-        "code":"00037"
-    },
-    {
-        "name":"Idaho",
-        "code":"00038"
-    },
-    {
-        "name":"Hawaii",
-        "code":"00039"
-    },
-    {
-        "name":"New Hampshire",
-        "code":"00040"
-    },
-    {
-        "name":"Rhode Island",
-        "code":"00041"
-    },
-    {
-        "name":"Montana",
-        "code":"00042"
-    },
-    {
-        "name":"Delaware",
-        "code":"00043"
-    },
-    {
-        "name":"South Dakota",
-        "code":"00044"
-    },
-    {
-        "name":"Alaska",
-        "code":"00045"
-    },
-    {
-        "name":"North Dakota",
-        "code":"00046"
-    },
-    {
-        "name":"Vermont",
-        "code":"00047"
-    },
-    {
-        "name":"District of Columbia",
-        "code":"00048"
-    },
-    {
-        "name":"Kansas",
-        "code":"00049"
-    },
-    {
-        "name":"Wyoming",
-        "code":"00050"
-    },
-    {
-        "name":"Maine", 
-        "code":"00051"
-    }
+  {
+   "name": "Alabama",
+   "code": 3
+  },
+  {
+   "name": "Alaska",
+   "code": 2
+  },
+  {
+   "name": "Arizona",
+   "code": 5
+  },
+  {
+   "name": "Arkansas",
+   "code": 4
+  },
+  {
+   "name": "California",
+   "code": 6
+  },
+  {
+   "name": "Colorado",
+   "code": 7
+  },
+  {
+   "name": "Connecticut",
+   "code": 8
+  },
+  {
+   "name": "Delaware",
+   "code": 10
+  },
+  {
+   "name": "District of Columbia",
+   "code": 9
+  },
+  {
+   "name": "Florida",
+   "code": 11
+  },
+  {
+   "name": "Georgia",
+   "code": 12
+  },
+  {
+   "name": "Hawaii",
+   "code": 13
+  },
+  {
+   "name": "Idaho",
+   "code": 15
+  },
+  {
+   "name": "Illinois",
+   "code": 16
+  },
+  {
+   "name": "Indiana",
+   "code": 17
+  },
+  {
+   "name": "Iowa",
+   "code": 14
+  },
+  {
+   "name": "Kansas",
+   "code": 18
+  },
+  {
+   "name": "Kentucky",
+   "code": 19
+  },
+  {
+   "name": "Louisiana",
+   "code": 20
+  },
+  {
+   "name": "Maine",
+   "code": 51
+  },
+  {
+   "name": "Maryland",
+   "code": 22
+  },
+  {
+   "name": "Massachusetts",
+   "code": 21
+  },
+  {
+   "name": "Michigan",
+   "code": 23
+  },
+  {
+   "name": "Minnesota",
+   "code": 24
+  },
+  {
+   "name": "Mississippi",
+   "code": 26
+  },
+  {
+   "name": "Missouri",
+   "code": 25
+  },
+  {
+   "name": "Montana",
+   "code": 27
+  },
+  {
+   "name": "Nebraska",
+   "code": 30
+  },
+  {
+   "name": "Nevada",
+   "code": 34
+  },
+  {
+   "name": "New Hampshire",
+   "code": 31
+  },
+  {
+   "name": "New Jersey",
+   "code": 32
+  },
+  {
+   "name": "New Mexico",
+   "code": 33
+  },
+  {
+   "name": "New York",
+   "code": 35
+  },
+  {
+   "name": "North Carolina",
+   "code": 28
+  },
+  {
+   "name": "North Dakota",
+   "code": 29
+  },
+  {
+   "name": "Ohio",
+   "code": 36
+  },
+  {
+   "name": "Oklahoma",
+   "code": 37
+  },
+  {
+   "name": "Oregon",
+   "code": 38
+  },
+  {
+   "name": "Pennsylvania",
+   "code": 39
+  },
+  {
+   "name": "Rhode Island",
+   "code": 40
+  },
+  {
+   "name": "South Carolina",
+   "code": 41
+  },
+  {
+   "name": "South Dakota",
+   "code": 52
+  },
+  {
+   "name": "Tennessee",
+   "code": 42
+  },
+  {
+   "name": "Texas",
+   "code": 43
+  },
+  {
+   "name": "United States",
+   "code": 1
+  },
+  {
+   "name": "Utah",
+   "code": 44
+  },
+  {
+   "name": "Vermont",
+   "code": 46
+  },
+  {
+   "name": "Virginia",
+   "code": 45
+  },
+  {
+   "name": "Washington",
+   "code": 47
+  },
+  {
+   "name": "West Virginia",
+   "code": 49
+  },
+  {
+   "name": "Wisconsin",
+   "code": 48
+  },
+  {
+   "name": "Wyoming",
+   "code": 50
+  }
 ]

@@ -37,11 +37,8 @@
     display: inline-block;
     width: 100px; }
   .notify-box .message {
-    left: 50%;
-    max-width: 500px;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -60%);
+    padding: 20%;
+    position: fixed;
     z-index: 1000; }
     .notify-box .message .h4,
     .notify-box .message .h2 {
